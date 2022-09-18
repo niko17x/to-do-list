@@ -1,0 +1,53 @@
+:root {
+    --main-bg-green-color: rgb(227, 255, 244);
+    --main-gray-color: rgb(215, 215, 215);
+}
+
+* {
+    box-sizing: border-box;
+    background-color: var(--main-bg-green-color);
+}
+
+.container {
+    display: grid;
+}
+
+/* ! HEADER SECTION */
+.header {
+    text-align: center;
+}
+
+/* ! BODY SECTION */
+.body {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    border: 3px solid var(--main-gray-color);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+/* ! NAVBAR SECTION */
+.navbar {
+    display: grid;
+    /* border-right: 3px solid var(--main-gray-color); */
+}
+
+.navbar > div {
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.chevron-down {
+    align-self: center;
+    width: 1rem;
+    height: auto;
+}
+
+.project-item {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+}
+
+.close-btn {
+    place-self: center;
+}

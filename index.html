@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer="defer"></script>
+    <title>To-Do List</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="header-title">To-Do List</h1>
+        </div>
+
+        <div class="body">
+            <div class="navbar">
+                <div class="navbar-today">
+                    <h3 class="subtitle">Today</h2>
+                </div>
+    
+                <div class="navbar-projects">
+                    <h3 class="subtitle">
+                        Projects
+                        <span>
+                            <img class="chevron-down" src="./img/chevron-down.svg" alt="chevron down">
+                        </span>
+                    </h3>
+                    
+                    <div class="projects">
+                        <!-- Individual project items: -->
+                        <div class="project-item">
+                            <span class="close-btn">&#10005</span>
+                            <p class="project-item-title">Project #1 Demo</p>
+                        </div>
+                        <div class="project-item">
+                            <span class="close-btn">&#10005</span>
+                            <p class="project-item-title">Project #2 Demo</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="create-project">
+                    <button class="create-project-btn">Create New Project</button>
+                </div>
+            </div>
+    
+            <div class="list">
+                <div class="list-header">
+                    <h2 class="list-title">Example Today</h2>
+                    <span class="task-counter">0 Tasks</span>
+                </div>
+    
+                <div class="list-body">
+                    <button class="add-task-btn">&#43</button>
+                    <label for="add-task"></label>
+                    <input type="text" name="add-task">
+    
+                    <div class="task-items">
+                        <label for="task">
+                            <span class="custom-checkbox"></span>
+                        </label>
+                        <input type="checkbox" name="task" id="task">
+                        <li>Get Puppies from daycare.</li>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
