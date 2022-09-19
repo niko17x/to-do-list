@@ -1,11 +1,32 @@
+/* ! GENERAL SELECTORS */
 :root {
-    --main-bg-green-color: rgb(227, 255, 244);
-    --main-gray-color: rgb(215, 215, 215);
+    --main-bg-green-color: rgb(237, 255, 248);
+    --main-gray-color: rgb(202, 202, 202);
+    --mint-color: rgb(190, 255, 227);
 }
 
 * {
     box-sizing: border-box;
     background-color: var(--main-bg-green-color);
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+h2 {
+    font-size: 3rem;
+    white-space: nowrap;
+}
+
+h3 {
+    font-size: 2rem;
+    white-space: nowrap;
+}
+
+img {
+    width: 2rem;
+    height: auto;
 }
 
 .container {
@@ -20,7 +41,7 @@
 /* ! BODY SECTION */
 .body {
     display: grid;
-    grid-template-columns: 3fr 7fr;
+    grid-template-columns: 1fr min-content 3fr;
     border: 3px solid var(--main-gray-color);
     border-radius: 10px;
     padding: 1rem;
@@ -29,12 +50,18 @@
 /* ! NAVBAR SECTION */
 .navbar {
     display: grid;
-    /* border-right: 3px solid var(--main-gray-color); */
 }
 
-.navbar > div {
-    display: grid;
-    grid-template-columns: auto;
+
+
+.navbar-today,
+.navbar-projects {
+    display: flex;
+    flex-direction: column;
+}
+
+.img-today {
+    place-self: center;
 }
 
 .chevron-down {
@@ -45,9 +72,170 @@
 
 .project-item {
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: 2fr 8fr;
+}
+
+.project-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .close-btn {
     place-self: center;
+}
+
+/* All inputs affected: */
+input {
+    text-decoration: none;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    height: 1.5rem;
+}
+
+input:focus {
+    outline: none;
+    border-bottom: 3px solid black;
+}
+
+/* All buttons affected: */
+button {
+    background-color: rgba(51, 51, 51, 0.05);
+    border-radius: 8px;
+    border-width: 0;
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 10px 12px;
+    text-align: center;
+    transition: all 200ms;
+    vertical-align: baseline;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: all .2s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+.create-project {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 5rem;
+}
+
+.create-project-btn {
+    width: 25vw;
+    place-self: center;
+}
+
+/* ! DIV BORDER BETWEEN NAVBAR & LIST SECTIONS */
+.border {
+    border-right: 3px solid var(--main-gray-color);
+    margin: 1rem;
+    height: 100%;
+}
+
+/* ! LIST SECTION */
+
+.list-header {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+}
+
+.task-counter {
+    place-self: center;
+}
+
+.add-task-label {
+    align-self: center;
+}
+
+.add-task-input {
+    /* border: none; */
+    margin-left: 1rem;
+    width: 45vw;
+}
+
+.add-task-btn {
+    width: 7vw;
+}
+
+
+/* ! LIST BODY SECTION */
+
+.list-body {
+    display: grid;
+    /* grid-template-columns: min-content auto; */
+}
+
+.create-task {
+    display: grid;
+    grid-template-columns: min-content auto;
+}
+
+.task-items-container {
+    display: grid;
+    grid-template-columns: min-content auto;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.task-item-label {
+    place-self: center;
+}
+
+/* Styling each task list */
+input[type="checkbox"] {
+    display: grid;
+    place-content: center;
+
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    border: 0.1rem solid black;
+    border-radius: 10px;
+    transform: translateY(-0.075em);
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1rem 1rem var(--mint-color);
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1.4);
+    border-radius: 50%;
+}
+
+/* ! TODO TASK ITEMS (Dynamically created tasks) */
+.task-items-container > li {
+    list-style: none;
+    align-self: center;
+    background: var(--mint-color);
+    border-radius: 10px;
+    padding: 0.7rem;
+}
+
+/* ! DYNAMICALLY ACTIVATED SELECTORS - JS */
+.active {
+    /*  */
 }

@@ -18,11 +18,20 @@
         <div class="body">
             <div class="navbar">
                 <div class="navbar-today">
-                    <h3 class="subtitle">Today</h2>
+                    <h3 class="subtitle">
+                        <span>
+                            <img src="./img/calendar-today-outline.svg" alt="" class="img-today">
+                        </span>
+                        Today
+                    </h2>
                 </div>
     
                 <div class="navbar-projects">
+                    
                     <h3 class="subtitle">
+                        <span>
+                            <img src="./img/pencil-ruler.svg" alt="img-project">
+                        </span>
                         Projects
                         <span>
                             <img class="chevron-down" src="./img/chevron-down.svg" alt="chevron down">
@@ -42,26 +51,33 @@
                     </div>
                 </div>
                 <div class="create-project">
+                    <label for="new-project"></label>
+                    <input class="create-project-input" type="text" name="new-project" placeholder="Enter Project Name">
                     <button class="create-project-btn">Create New Project</button>
                 </div>
             </div>
+
+            <div class="border"></div>
     
             <div class="list">
                 <div class="list-header">
-                    <h2 class="list-title">Example Today</h2>
+                    <h2 class="list-title">Today</h2>
                     <span class="task-counter">0 Tasks</span>
                 </div>
     
                 <div class="list-body">
-                    <button class="add-task-btn">&#43</button>
-                    <label for="add-task"></label>
-                    <input type="text" name="add-task">
-    
-                    <div class="task-items">
-                        <label for="task">
-                            <span class="custom-checkbox"></span>
+                    <div class="create-task">
+                        <button class="add-task-btn">&#43</button>
+                        <label class="add-task-label" for="add-task">
+                            <input class="add-task-input" type="text" name="add-task" placeholder="Enter New Task">
                         </label>
-                        <input type="checkbox" name="task" id="task">
+                    </div>
+                    <!-- Demo task item (Use Template): -->
+                    <div class="task-items-container">
+                        <label class="task-item-label" for="task-item">
+                            <span class="task-item-span"></span>
+                            <input class="task-item-input" type="checkbox" name="task" id="task" checked>
+                        </label>
                         <li>Get Puppies from daycare.</li>
                     </div>
                 </div>
