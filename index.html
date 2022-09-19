@@ -18,7 +18,7 @@
         <div class="body">
             <div class="navbar">
                 <div class="navbar-today">
-                    <h3 class="subtitle">
+                    <h3 class="subtitle subtitle-today">
                         <span>
                             <img src="./img/calendar-today-outline.svg" alt="" class="img-today">
                         </span>
@@ -28,7 +28,7 @@
     
                 <div class="navbar-projects">
                     
-                    <h3 class="subtitle">
+                    <h3 class="subtitle subtitle-projects">
                         <span>
                             <img src="./img/pencil-ruler.svg" alt="img-project">
                         </span>
@@ -38,23 +38,20 @@
                         </span>
                     </h3>
                     
-                    <div class="projects">
-                        <!-- Individual project items: -->
-                        <div class="project-item">
-                            <span class="close-btn">&#10005</span>
-                            <p class="project-item-title">Project #1 Demo</p>
-                        </div>
-                        <div class="project-item">
-                            <span class="close-btn">&#10005</span>
-                            <p class="project-item-title">Project #2 Demo</p>
-                        </div>
+                    <div class="projects-container">
+                        <!-- DEMO => Individual project items: -->
+                        <!-- <div class="project-item">
+                            <span class="close-btn">&#10005
+                            </span>
+                            <li class="project-item-title">Project #1 Demo</li>
+                        </div> -->
                     </div>
                 </div>
-                <div class="create-project">
+                <form action="" class="create-project">
                     <label for="new-project"></label>
                     <input class="create-project-input" type="text" name="new-project" placeholder="Enter Project Name">
-                    <button class="create-project-btn">Create New Project</button>
-                </div>
+                    <button type="submit" class="create-project-btn">Create New Project</button>
+                </form>
             </div>
 
             <div class="border"></div>
@@ -74,15 +71,27 @@
                     </div>
                     <!-- Demo task item (Use Template): -->
                     <div class="task-items-container">
-                        <label class="task-item-label" for="task-item">
-                            <span class="task-item-span"></span>
-                            <input class="task-item-input" type="checkbox" name="task" id="task" checked>
-                        </label>
-                        <li>Get Puppies from daycare.</li>
+                        <!-- <div class="task-items">
+                            <label class="task-item-label" for="task-item">
+                                <span class="task-item-span"></span>
+                                <input class="task-item-input" type="checkbox" name="task" id="task" checked>
+                            </label>
+                            <li>Get Puppies from daycare.</li>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Template => Dynamically creating a new list task item. -->
+    <template>
+        <div class="task-items">
+            <label class="task-item-label" for="task-item">
+                <span class="task-item-span"></span>
+                <input class="task-item-input" type="checkbox" name="task" id="task" checked>
+            </label>
+            <li>Get Puppies from daycare.</li>
+        </div>
+    </template>
 </body>
 </html>

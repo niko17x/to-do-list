@@ -29,6 +29,11 @@ img {
     height: auto;
 }
 
+li {
+    text-decoration: none;
+    list-style: none;
+}
+
 .container {
     display: grid;
 }
@@ -80,6 +85,11 @@ img {
     text-overflow: ellipsis;
 }
 
+.projects-container {
+    display: grid;
+    gap: 1rem;
+}
+
 .close-btn {
     place-self: center;
 }
@@ -128,6 +138,7 @@ button {
 
 button:hover {
     transform: scale(1.1);
+    background-color: var(--mint-color);
 }
 
 .create-project {
@@ -188,6 +199,10 @@ button:hover {
 
 .task-items-container {
     display: grid;
+}
+
+.task-items {
+    display: grid;
     grid-template-columns: min-content auto;
     gap: 1rem;
     margin-top: 1.5rem;
@@ -226,8 +241,7 @@ input[type="checkbox"]:checked::before {
     border-radius: 50%;
 }
 
-/* ! TODO TASK ITEMS (Dynamically created tasks) */
-.task-items-container > li {
+.task-items > li {
     list-style: none;
     align-self: center;
     background: var(--mint-color);
@@ -237,5 +251,5 @@ input[type="checkbox"]:checked::before {
 
 /* ! DYNAMICALLY ACTIVATED SELECTORS - JS */
 .active {
-    /*  */
+    font-weight: 800;
 }
