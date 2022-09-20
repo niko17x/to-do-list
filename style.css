@@ -141,7 +141,7 @@ button:hover {
     background-color: var(--mint-color);
 }
 
-.create-project {
+.create-project-form {
     display: grid;
     gap: 0.7rem;
     margin-top: 5rem;
