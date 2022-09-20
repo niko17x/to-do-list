@@ -1,8 +1,10 @@
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
+const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
+
 // Project items array:
 let projectItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
-let selectedListId = LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId';
+let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID);
 
 
 
@@ -15,6 +17,9 @@ const navbar = document.querySelector('.navbar');
 const listTitle = document.querySelector('.list-title');
 const deleteBtn = document.querySelector('.delete-btn');
 const createProjectForm = document.querySelector('.create-project-form');
+const subtitleToday = document.querySelector('.subtitle-today');
+const createNewTaskForm = document.querySelector('.create-new-task-form');
+const addTaskInput = document.querySelector('.add-task-input');
 
 function saveAndRender() {
     save()
@@ -25,8 +30,6 @@ function save() {
     localStorage.setItem(LOCAL_STORAGE_LIST_KEY, JSON.stringify(projectItemList));
     localStorage.setItem(LOCAL_STORAGE_SELECTED_LIST_ID, selectedListId);
 };
-
-
 
 function render() {
     // Removes existing nodes so project items aren't duplicated for every loop being run:
@@ -74,10 +77,35 @@ function clearElement(element) {
     }
 };
 
+// Generate an object for tasks inside projectListItem array:
+function generateTask(title) {
+    return {
+        task: title,
+        complete: false,
+    }
+};
+
+// Submit form once user creates value in 'Enter New Task' input:
+createNewTaskForm.addEventListener('submit', e => {
+    const getValue = addTaskInput.value;
+    e.preventDefault();
+    if (selectedListId && getValue != null || getValue === '') {
+        // getResult => get currently selected object:
+        const getResult = projectItemList.find(item => item.id === selectedListId);
+        const newResult = generateTask(getValue); 
+        addTaskInput.value = null;
+        getResult.tasks.push(newResult);
+        console.log(getResult);
+    } else {
+        return;
+    }
+    saveAndRender();
+})
 
 
 
 //* EVENT LISTENERS:
+
 createProjectForm.addEventListener('submit', e => {
     e.preventDefault();
     const getValue = createProjectInput.value;
@@ -97,14 +125,23 @@ navbar.addEventListener('click', e => {
     }
 });
 
+// 
 // Obtain the id of the element => Return a new project list with that id filtered out.
-
 projectsContainer.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'button') {
+        // Returns updated copy of project list => updates rendered project list on webpage:
         projectItemList = projectItemList.filter(item => item.id != e.target.id);
     }
     console.log(projectItemList);
     saveAndRender();
 })
 
+
+
+
+
+
+
 render();
+
+//? THOROUGHLY THINK THROUGH THE GOAL OF THE FUNCTION => WRITE DOWN THE STEPS AND FOLLOW THROUGH EACH STEP LIKE YOU DID.

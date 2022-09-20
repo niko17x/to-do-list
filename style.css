@@ -195,7 +195,7 @@ button:hover {
     /* grid-template-columns: min-content auto; */
 }
 
-.create-task {
+.create-new-task-form {
     display: grid;
     grid-template-columns: min-content auto;
 }
