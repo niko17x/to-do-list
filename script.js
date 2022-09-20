@@ -1,4 +1,9 @@
-// Dealing with local storage:
+// Dealing with local storage using KEYS:
+const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
+// Project items array:
+let projectItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
+let selectedListId = LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId';
+
 
 
 // Get lists data from local storage || if none exists, then create new empty array.
@@ -8,13 +13,20 @@ const createProjectInput = document.querySelector('.create-project-input');
 const projectItem = document.querySelector('.project-item');
 const navbar = document.querySelector('.navbar');
 const listTitle = document.querySelector('.list-title');
-const closeBtn = document.querySelector('.close-btn');
+const deleteBtn = document.querySelector('.delete-btn');
 const createProjectForm = document.querySelector('.create-project-form');
 
+function saveAndRender() {
+    save()
+    render()
+};
+
+function save() {
+    localStorage.setItem(LOCAL_STORAGE_LIST_KEY, JSON.stringify(projectItemList));
+    localStorage.setItem(LOCAL_STORAGE_SELECTED_LIST_ID, selectedListId);
+};
 
 
-// Project items array:
-const projectItemList = [];
 
 function render() {
     // Removes existing nodes so project items aren't duplicated for every loop being run:
@@ -28,20 +40,20 @@ function renderProjectItem() {
         const divProjectItem = document.createElement('div');
         divProjectItem.classList.add('project-item');
         // divProjectItem.id = item.id;
-        const spanCloseBtn = document.createElement('span');
-        spanCloseBtn.classList.add('close-btn');
-        spanCloseBtn.id = item.id;
-        spanCloseBtn.innerHTML = '&#10005';
+        const btnDeleteButton = document.createElement('button');
+        btnDeleteButton.classList.add('delete-btn');
+        btnDeleteButton.id = item.id;
+        btnDeleteButton.innerHTML = '&#10005';
         const liProjectItemTitle = document.createElement('li');
         liProjectItemTitle.classList.add('project-item-title');
         liProjectItemTitle.id = item.id;
         liProjectItemTitle.innerText = item.projectName;
 
-        // if (item.id === selectedListId) {
-        //     liProjectItemTitle.classList.add('active');
-        // }
+        if (item.id === selectedListId) {
+            liProjectItemTitle.classList.add('active');
+        }
     
-        divProjectItem.append(spanCloseBtn, liProjectItemTitle);
+        divProjectItem.append(btnDeleteButton, liProjectItemTitle);
         projectsContainer.append(divProjectItem);
     })
 };
@@ -74,20 +86,25 @@ createProjectForm.addEventListener('submit', e => {
     const newProjectTitle = generateUniqueId(getValue);
     createProjectInput.value = null; // Reset the value once accepted.
     projectItemList.push(newProjectTitle); // Push valid new object to array.
-    render();
+    saveAndRender();
 })
 
 navbar.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'li') {
         selectedListId = e.target.id
         listTitle.innerText = e.target.innerText;
+        saveAndRender();
     }
 });
 
+// Obtain the id of the element => Return a new project list with that id filtered out.
 
+projectsContainer.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'button') {
+        projectItemList = projectItemList.filter(item => item.id != e.target.id);
+    }
+    console.log(projectItemList);
+    saveAndRender();
+})
 
-// document.querySelector('.delete-btn').addEventListener('click', e => {
-//     projectItemList = projectItemList.filter(item => item.id !== selectedListId) // Creates new list with filter.
-//     selectedListId = null;
-//     saveRender();
-// });
+render();

@@ -34,66 +34,6 @@ li {
     list-style: none;
 }
 
-.container {
-    display: grid;
-}
-
-/* ! HEADER SECTION */
-.header {
-    text-align: center;
-}
-
-/* ! BODY SECTION */
-.body {
-    display: grid;
-    grid-template-columns: 1fr min-content 3fr;
-    border: 3px solid var(--main-gray-color);
-    border-radius: 10px;
-    padding: 1rem;
-}
-
-/* ! NAVBAR SECTION */
-.navbar {
-    display: grid;
-}
-
-
-
-.navbar-today,
-.navbar-projects {
-    display: flex;
-    flex-direction: column;
-}
-
-.img-today {
-    place-self: center;
-}
-
-.chevron-down {
-    align-self: center;
-    width: 1rem;
-    height: auto;
-}
-
-.project-item {
-    display: grid;
-    grid-template-columns: 2fr 8fr;
-}
-
-.project-item-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.projects-container {
-    display: grid;
-    gap: 1rem;
-}
-
-.close-btn {
-    place-self: center;
-}
-
 /* All inputs affected: */
 input {
     text-decoration: none;
@@ -139,6 +79,69 @@ button {
 button:hover {
     transform: scale(1.1);
     background-color: var(--mint-color);
+}
+
+.container {
+    display: grid;
+}
+
+/* ! HEADER SECTION */
+.header {
+    text-align: center;
+}
+
+/* ! BODY SECTION */
+.body {
+    display: grid;
+    grid-template-columns: 1fr min-content 3fr;
+    border: 3px solid var(--main-gray-color);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+/* ! NAVBAR SECTION */
+.navbar {
+    display: grid;
+}
+
+.navbar-today,
+.navbar-projects {
+    display: flex;
+    flex-direction: column;
+}
+
+.img-today {
+    place-self: center;
+}
+
+.chevron-down {
+    align-self: center;
+    width: 1rem;
+    height: auto;
+}
+
+.project-item {
+    display: grid;
+    grid-template-columns: min-content auto;
+    gap: 0.5rem;
+}
+
+.project-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.projects-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.delete-btn {
+    padding: 0;
+    margin: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: transparent;
 }
 
 .create-project-form {
@@ -252,4 +255,7 @@ input[type="checkbox"]:checked::before {
 /* ! DYNAMICALLY ACTIVATED SELECTORS - JS */
 .active {
     font-weight: 800;
+    font-size: 2rem;
 }
+
+

@@ -9,3 +9,13 @@
 5. The new object created is now pushed to the array object => 'projectItems'.
 6. renderProjectItem() function is now invoked which will firstly invoke the clearElement(element) function to remove any existing nodes within the DOM (specifically, nodes from '.projects-container') from previous execution of renderProjectItem(). This prevents any duplication from the .forEach loop. In essence, wiping the slate clean to prevent duplicates...
 7. Finally, the project name will be rendered to the webpage.
+
+
+
+
+
+
+
+
+//! Notes:
+* When trying to select dynamically created DOM elements (which doesn't immediately exist and register in HTML), you can't directly select them. However, you can indirectly select them by selecting the over-arching parent container element and then stating and 'if' statement to check if the click event registered on the correct element/tag. Then you can state your objective.
