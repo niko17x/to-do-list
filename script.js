@@ -2,13 +2,10 @@
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
 const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
 
-// Project items array:
+// Get lists data from local storage || if none exists, then create new empty array.
 let projectItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
 let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID);
 
-
-
-// Get lists data from local storage || if none exists, then create new empty array.
 
 const projectsContainer = document.querySelector('.projects-container');
 const createProjectInput = document.querySelector('.create-project-input');
@@ -20,6 +17,8 @@ const createProjectForm = document.querySelector('.create-project-form');
 const subtitleToday = document.querySelector('.subtitle-today');
 const createNewTaskForm = document.querySelector('.create-new-task-form');
 const addTaskInput = document.querySelector('.add-task-input');
+const taskItemsContainer = document.querySelector('.task-items-container');
+
 
 function saveAndRender() {
     save()
@@ -35,6 +34,10 @@ function render() {
     // Removes existing nodes so project items aren't duplicated for every loop being run:
     clearElement(projectsContainer);
     renderProjectItem();
+
+    const selectedList = projectItemList.find(item => item.id === selectedListId);
+    // Check if projectsContainer is not empty and selectedList is true, then run function:
+    if (projectsContainer.hasChildNodes() && selectedList) { renderTaskItem(selectedList) };
 };
 
 // Dynamically creating new projects:
@@ -67,7 +70,7 @@ function generateUniqueId(title) {
     return {
         id: Date.now().toString(), // Generate unique id.
         projectName: title,
-        tasks: [], // Unique todo tasks for each object in the array (todo list).
+        tasks: [] // Unique todo tasks for each object in the array (todo list).
     }
 };
 
@@ -80,11 +83,113 @@ function clearElement(element) {
 // Generate an object for tasks inside projectListItem array:
 function generateTask(title) {
     return {
+        id: Date.now().toString(),
         task: title,
         complete: false,
     }
 };
 
+
+
+//! TESTING START:
+
+const testing1 = [
+    {
+        id: 1,
+        projectName: 'Project 1',
+        tasks: [
+            {
+                id: 1,
+                task: 'Do dishes',
+                complete: true,
+            }
+        ]
+    },
+    {
+        id: 2,
+        projectName: 'Project 2',
+        tasks: [
+            {
+                id: 2,
+                task: 'Do groceries',
+                complete: true,
+            },
+            {
+                id: 2,
+                task: 'Do groceries again',
+                complete: true,
+            },
+
+        ]
+    }
+];
+
+// testing1.forEach(function(obj) {
+//     const res = obj.tasks.map(function(o) {
+//         return o.task;
+//     })
+// });
+
+// getObjectOfSelectedListId().forEach(function(entry) {
+//     entry.tasks.forEach(function(task) {
+//         console.log(task.task);
+//     })
+// });
+
+// getObjectOfSelectedListId().tasks.forEach(function(entry) {
+//     console.log(entry.task)
+// })
+
+const taskItemInput = document.querySelector('.task-item-input');
+const projectItemTitle = document.querySelectorAll('.project-item-title');
+const template = document.querySelector('template');
+const taskItems = document.querySelector('.task-items');
+
+// Generate task items:
+function renderTaskItem(selectedList) {
+    clearElement(taskItemsContainer)
+    selectedList.tasks.forEach((entry) => {
+        // const taskElement = document.importNode(template.content, true);
+        // taskItemsContainer.append(taskElement);
+
+        const divTaskItems = document.createElement('div');
+        divTaskItems.classList.add('task-items');
+        const taskItemLabel = document.createElement('label');
+        taskItemLabel.classList.add('task-item-label');
+        taskItemLabel.setAttribute('for', 'task-item');
+        const taskItemSpan = document.createElement('span');
+        taskItemSpan.classList.add('task-item-span');
+        const taskItemInput = document.createElement('input');
+        taskItemInput.classList.add('task-item-input');
+        taskItemInput.setAttribute('type', 'checkbox');
+        taskItemInput.setAttribute('name', 'task');
+        taskItemInput.setAttribute('id', 'task');
+        // taskItemInput.setAttribute('checked', '');
+        const taskListItem = document.createElement('li');
+        taskListItem.classList.add('task-list-item');
+        taskListItem.innerText = entry.task;
+
+        taskItemLabel.append(taskItemSpan, taskItemInput);
+        divTaskItems.append(taskItemLabel, taskListItem);
+
+        taskItemsContainer.append(divTaskItems);
+    })
+};
+
+
+// Returns each task item from the selectedListId specific object: => this func currently being used inside renderTaskItem() but not this function specifically;
+// function getTaskItem() {
+//     const selectedList = projectItemList.find(item => item.id === selectedListId);
+//     selectedList.tasks.forEach(function(entry) {
+//         generateTask(entry.task);
+//     })
+// };
+
+
+
+//! TESTING END.
+
+//* EVENT LISTENERS:
 // Submit form once user creates value in 'Enter New Task' input:
 createNewTaskForm.addEventListener('submit', e => {
     const getValue = addTaskInput.value;
@@ -100,13 +205,10 @@ createNewTaskForm.addEventListener('submit', e => {
         return;
     }
     saveAndRender();
-})
+});
 
-
-
-//* EVENT LISTENERS:
-
-createProjectForm.addEventListener('submit', e => {
+// Validate user project name value input from user and if valid, push the newly created object using 'generateUniqueId(getValue) and render to page:
+createProjectForm.addEventListener('submit', e => { // Using 'createProjectForm' as an event is a way around selecting the specific DOM element even though that element may have not yet rendered/generated on the page which causes an error in console.
     e.preventDefault();
     const getValue = createProjectInput.value;
     // If str is null or empty, don't return any data:
@@ -125,7 +227,6 @@ navbar.addEventListener('click', e => {
     }
 });
 
-// 
 // Obtain the id of the element => Return a new project list with that id filtered out.
 projectsContainer.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'button') {
@@ -134,13 +235,17 @@ projectsContainer.addEventListener('click', e => {
     }
     console.log(projectItemList);
     saveAndRender();
+});
+
+taskItemsContainer.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'input') {
+        const selectedList = projectItemList.find(item => item.id === selectedListId);
+        const selectedTask = selectedList.tasks.find(task => task.id === e.target.id);
+        selectedTask.complete = e.target.checked;
+        save()
+        // renderTaskCount();
+    }
 })
-
-
-
-
-
-
 
 render();
 
