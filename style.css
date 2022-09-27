@@ -210,9 +210,10 @@ button:hover {
 
 .task-items {
     display: grid;
-    grid-template-columns: min-content auto;
+    grid-template-columns: min-content auto min-content;
     gap: 1rem;
     margin-top: 1.5rem;
+    margin-right: 1rem;
 }
 
 .task-item-label {
@@ -250,7 +251,7 @@ input[type="checkbox"]:checked::before {
 
 .task-items > li {
     list-style: none;
-    align-self: center;
+    align-self: flex-start;
     background: var(--mint-color);
     border-radius: 10px;
     padding: 0.7rem;

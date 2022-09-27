@@ -1,3 +1,6 @@
+// TODO: 1. Deleting individual tasks within projects /// 2. Clicking on 'Today' on the navbar displays 'Today task items' and not the project task items /// 3. Insert 'filler task items' when new project is created and user has not created a task yet /// 4. Updating dynamic title to correspond correctly with selected project, null or 'today'.
+
+
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
 const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
@@ -130,18 +133,23 @@ function renderTaskItem(selectedList) {
         taskListItem.classList.add('task-list-item');
         taskListItem.id = entry.id;
         taskListItem.innerText = entry.task;
+        const deleteBtnTask = document.createElement('button');
+        deleteBtnTask.id = entry.id;
+        deleteBtnTask.classList.add('delete-btn-task');
+        deleteBtnTask.setAttribute('type', 'submit');
+        deleteBtnTask.innerHTML = '&#10005'
 
 
         // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
         const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
-        const foo = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
+        const completedTasks = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
         selectedList.tasks.filter(item => {
-            if (item.complete === true) { foo.push(item.id) }
+            if (item.complete === true) { completedTasks.push(item.id) }
         })
-        if (foo.includes(listStringConvert)) { taskListItem.classList.add('complete') }
+        if (completedTasks.includes(listStringConvert)) { taskListItem.classList.add('complete') }
 
         taskItemLabel.append(taskItemSpan, taskItemInput);
-        divTaskItems.append(taskItemLabel, taskListItem);
+        divTaskItems.append(taskItemLabel, taskListItem, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
     })
 };
@@ -227,6 +235,26 @@ taskItemsContainer.addEventListener('click', e => {
         renderTaskItem(selectedList);
     };
     save();
+});
+
+// Deleting specific task items:
+taskItemsContainer.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'button') {
+        const selectedList = projectItemList.find(item => item.id === selectedListId);
+        const taskItemsAll = document.querySelectorAll('.task-items');
+        
+        taskItemsAll.forEach(item => {
+            if (e.target.id === item.id) {
+                // Iterate through each task and if matching id is found, delete that task.
+                selectedList.tasks.forEach(element => {
+                    if (element.id === item.id) {
+                        selectedList.tasks.splice(selectedList.tasks.indexOf(element), 1); // Select tasks of specific project and remove the matching element(task) from projectListItem array.
+                    }
+                });
+            }
+        })
+    }
+    saveAndRender();
 });
 
 function printWindow() {
