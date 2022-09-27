@@ -18,6 +18,12 @@ const subtitleToday = document.querySelector('.subtitle-today');
 const createNewTaskForm = document.querySelector('.create-new-task-form');
 const addTaskInput = document.querySelector('.add-task-input');
 const taskItemsContainer = document.querySelector('.task-items-container');
+const taskItemInput = document.querySelector('.task-item-input');
+const projectItemTitle = document.querySelectorAll('.project-item-title');
+const template = document.querySelector('template');
+const taskItems = document.querySelector('.task-items');
+const taskCounter = document.querySelector('.task-counter');
+
 
 
 function saveAndRender() {
@@ -31,13 +37,16 @@ function save() {
 };
 
 function render() {
+    const selectedList = projectItemList.find(item => item.id === selectedListId);
     // Removes existing nodes so project items aren't duplicated for every loop being run:
     clearElement(projectsContainer);
     renderProjectItem();
 
-    const selectedList = projectItemList.find(item => item.id === selectedListId);
     // Check if projectsContainer is not empty and selectedList is true, then run function:
-    if (projectsContainer.hasChildNodes() && selectedList) { renderTaskItem(selectedList) };
+    if (projectsContainer.hasChildNodes() && selectedList) {
+        renderTaskItem(selectedList)
+        renderTaskCount(selectedList)
+    };
 };
 
 // Dynamically creating new projects:
@@ -64,7 +73,6 @@ function renderProjectItem() {
     })
 };
 
-
 // Need object data to insert into 'projectItems' array and create unique id for each entry:
 function generateUniqueId(title) {
     return {
@@ -89,62 +97,6 @@ function generateTask(title) {
     }
 };
 
-
-
-//! TESTING START:
-
-const testing1 = [
-    {
-        id: 1,
-        projectName: 'Project 1',
-        tasks: [
-            {
-                id: 1,
-                task: 'Do dishes',
-                complete: true,
-            }
-        ]
-    },
-    {
-        id: 2,
-        projectName: 'Project 2',
-        tasks: [
-            {
-                id: 2,
-                task: 'Do groceries',
-                complete: true,
-            },
-            {
-                id: 2,
-                task: 'Do groceries again',
-                complete: true,
-            },
-
-        ]
-    }
-];
-
-// testing1.forEach(function(obj) {
-//     const res = obj.tasks.map(function(o) {
-//         return o.task;
-//     })
-// });
-
-// getObjectOfSelectedListId().forEach(function(entry) {
-//     entry.tasks.forEach(function(task) {
-//         console.log(task.task);
-//     })
-// });
-
-// getObjectOfSelectedListId().tasks.forEach(function(entry) {
-//     console.log(entry.task)
-// })
-
-const taskItemInput = document.querySelector('.task-item-input');
-const projectItemTitle = document.querySelectorAll('.project-item-title');
-const template = document.querySelector('template');
-const taskItems = document.querySelector('.task-items');
-
 // Generate task items:
 function renderTaskItem(selectedList) {
     clearElement(taskItemsContainer)
@@ -154,28 +106,65 @@ function renderTaskItem(selectedList) {
 
         const divTaskItems = document.createElement('div');
         divTaskItems.classList.add('task-items');
+        divTaskItems.id = entry.id;
         const taskItemLabel = document.createElement('label');
         taskItemLabel.classList.add('task-item-label');
         taskItemLabel.setAttribute('for', 'task-item');
         const taskItemSpan = document.createElement('span');
         taskItemSpan.classList.add('task-item-span');
         const taskItemInput = document.createElement('input');
+        taskItemInput.id = entry.id;
+        taskItemInput.checked = entry.complete;
         taskItemInput.classList.add('task-item-input');
         taskItemInput.setAttribute('type', 'checkbox');
         taskItemInput.setAttribute('name', 'task');
-        taskItemInput.setAttribute('id', 'task');
-        // taskItemInput.setAttribute('checked', '');
+        taskItemInput.checked = entry.complete;
         const taskListItem = document.createElement('li');
         taskListItem.classList.add('task-list-item');
+        taskListItem.id = entry.id;
         taskListItem.innerText = entry.task;
+
+        // //! Test Start:
+        // // Todo: 
+        // // Convert the ids from list element from number to string for comparison:
+        // const listStringConvert = taskListItem.id.toString();
+        // // Get selected list tasks id that where 'complete === true' and put all ids into an array:
+        // const foo = [];
+        // const completedTasks = selectedList.tasks.filter(item => {
+        //     if (item.complete === true) {
+        //         foo.push(item.id);
+        //     }
+        // })
+
+        // console.log(foo)
+
+
+
+        // //! Test End.
 
         taskItemLabel.append(taskItemSpan, taskItemInput);
         divTaskItems.append(taskItemLabel, taskListItem);
-
         taskItemsContainer.append(divTaskItems);
     })
 };
 
+
+// function foo() {
+//     const selectedList = projectItemList.find(item => item.id === selectedListId);
+//     // Gets all tasks with .complete = true;
+//     // const completedTasks = selectedList.tasks.filter(item => item.complete === true);
+//     // const completedTasks = selectedList.tasks.filter(item => item.complete === true).map((item) => item.id);
+//     const completedTasks = selectedList.tasks.filter(item => item.complete === true).map((item) => item.id);
+// };
+
+
+
+// Deal with the task counter in the task container:
+function renderTaskCount(selectedList) {
+    const incompleteTaskCount = selectedList.tasks.filter(item => !item.complete).length // Get the length of 'complete: false' properties in tasks.
+    const taskCounterText = incompleteTaskCount === 1 ? "task" : "tasks";
+    taskCounter.innerText = `${incompleteTaskCount} ${taskCounterText} remaining`
+};
 
 // Returns each task item from the selectedListId specific object: => this func currently being used inside renderTaskItem() but not this function specifically;
 // function getTaskItem() {
@@ -191,6 +180,7 @@ function renderTaskItem(selectedList) {
 
 //* EVENT LISTENERS:
 // Submit form once user creates value in 'Enter New Task' input:
+
 createNewTaskForm.addEventListener('submit', e => {
     const getValue = addTaskInput.value;
     e.preventDefault();
@@ -217,7 +207,7 @@ createProjectForm.addEventListener('submit', e => { // Using 'createProjectForm'
     createProjectInput.value = null; // Reset the value once accepted.
     projectItemList.push(newProjectTitle); // Push valid new object to array.
     saveAndRender();
-})
+});
 
 navbar.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'li') {
@@ -237,16 +227,24 @@ projectsContainer.addEventListener('click', e => {
     saveAndRender();
 });
 
+// Toggle true/false for task input:
 taskItemsContainer.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'input') {
-        const selectedList = projectItemList.find(item => item.id === selectedListId);
-        const selectedTask = selectedList.tasks.find(task => task.id === e.target.id);
-        selectedTask.complete = e.target.checked;
-        save()
-        // renderTaskCount();
-    }
-})
+        // Get the selected object from object array:
+        const selectedList = projectItemList.find(property => property.id === selectedListId);
+        // Get the item of the clicked on target id and id of the specific task that matches:
+        const selectedTaskItem = selectedList.tasks.find(property => property.id === e.target.id);
+        selectedTaskItem.complete = e.target.checked; // Toggles 'true/false' to 'complete' property.
+    };
+    save();
+});
+
+function printWindow() {
+    window.addEventListener('click', e => {
+        console.log('window target', e.target);
+    });
+};
+// printWindow();
+    
 
 render();
-
-//? THOROUGHLY THINK THROUGH THE GOAL OF THE FUNCTION => WRITE DOWN THE STEPS AND FOLLOW THROUGH EACH STEP LIKE YOU DID.

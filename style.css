@@ -100,11 +100,6 @@ button:hover {
 }
 
 /* ! NAVBAR SECTION */
-.navbar {
-    display: grid;
-    grid-auto-rows: 1fr;
-}
-
 .navbar-today,
 .navbar-projects {
     /* display: flex; */
@@ -131,6 +126,7 @@ button:hover {
 }
 
 .project-item-title {
+    align-self: center;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -206,9 +202,10 @@ button:hover {
 }
 
 .task-items-container {
-    display: grid;
-    max-height: 40vh;
+    /* display: grid; */
+    /* max-height: 40vh; */
     overflow: scroll;
+    height: 40vh;
 }
 
 .task-items {
@@ -262,7 +259,7 @@ input[type="checkbox"]:checked::before {
 /* ! DYNAMICALLY ACTIVATED SELECTORS - JS */
 .active {
     font-weight: 800;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .complete {
