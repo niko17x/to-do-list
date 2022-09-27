@@ -6,7 +6,7 @@ const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
 let projectItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
 let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID);
 
-
+// DOM selectors:
 const projectsContainer = document.querySelector('.projects-container');
 const createProjectInput = document.querySelector('.create-project-input');
 const projectItem = document.querySelector('.project-item');
@@ -47,6 +47,13 @@ function render() {
         renderTaskItem(selectedList)
         renderTaskCount(selectedList)
     };
+};
+
+// Clear all element nodes if projectItemList is empty or selectedListId is null:
+function checkCurrentDisplay() {
+    if (projectItemList.length === 0 || selectedListId == null) {
+        clearElement(taskItemsContainer)
+    }
 };
 
 // Dynamically creating new projects:
@@ -124,40 +131,20 @@ function renderTaskItem(selectedList) {
         taskListItem.id = entry.id;
         taskListItem.innerText = entry.task;
 
-        // //! Test Start:
-        // // Todo: 
-        // // Convert the ids from list element from number to string for comparison:
-        // const listStringConvert = taskListItem.id.toString();
-        // // Get selected list tasks id that where 'complete === true' and put all ids into an array:
-        // const foo = [];
-        // const completedTasks = selectedList.tasks.filter(item => {
-        //     if (item.complete === true) {
-        //         foo.push(item.id);
-        //     }
-        // })
 
-        // console.log(foo)
-
-
-
-        // //! Test End.
+        // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
+        const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
+        const foo = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
+        selectedList.tasks.filter(item => {
+            if (item.complete === true) { foo.push(item.id) }
+        })
+        if (foo.includes(listStringConvert)) { taskListItem.classList.add('complete') }
 
         taskItemLabel.append(taskItemSpan, taskItemInput);
         divTaskItems.append(taskItemLabel, taskListItem);
         taskItemsContainer.append(divTaskItems);
     })
 };
-
-
-// function foo() {
-//     const selectedList = projectItemList.find(item => item.id === selectedListId);
-//     // Gets all tasks with .complete = true;
-//     // const completedTasks = selectedList.tasks.filter(item => item.complete === true);
-//     // const completedTasks = selectedList.tasks.filter(item => item.complete === true).map((item) => item.id);
-//     const completedTasks = selectedList.tasks.filter(item => item.complete === true).map((item) => item.id);
-// };
-
-
 
 // Deal with the task counter in the task container:
 function renderTaskCount(selectedList) {
@@ -209,6 +196,7 @@ createProjectForm.addEventListener('submit', e => { // Using 'createProjectForm'
     saveAndRender();
 });
 
+// Update title when a project name is clicked on:
 navbar.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'li') {
         selectedListId = e.target.id
@@ -217,13 +205,14 @@ navbar.addEventListener('click', e => {
     }
 });
 
-// Obtain the id of the element => Return a new project list with that id filtered out.
+// Delete project with click event:
 projectsContainer.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'button') {
         // Returns updated copy of project list => updates rendered project list on webpage:
         projectItemList = projectItemList.filter(item => item.id != e.target.id);
+        selectedListId = null; // Default set selectedListId to null if current project is deleted.
+        checkCurrentDisplay();
     }
-    console.log(projectItemList);
     saveAndRender();
 });
 
@@ -235,6 +224,7 @@ taskItemsContainer.addEventListener('click', e => {
         // Get the item of the clicked on target id and id of the specific task that matches:
         const selectedTaskItem = selectedList.tasks.find(property => property.id === e.target.id);
         selectedTaskItem.complete = e.target.checked; // Toggles 'true/false' to 'complete' property.
+        renderTaskItem(selectedList);
     };
     save();
 });
