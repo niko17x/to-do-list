@@ -1,13 +1,19 @@
-// TODO: 1. Deleting individual tasks within projects /// 2. Clicking on 'Today' on the navbar displays 'Today task items' and not the project task items /// 3. Insert 'filler task items' when new project is created and user has not created a task yet /// 4. Updating dynamic title to correspond correctly with selected project, null or 'today'.
+// TODO: 1. Deleting individual tasks within projects - DONE /// 2. Clicking on 'Today' on the navbar displays 'Today task items' and not the project task items /// 3. Insert 'filler task items' when new project is created and user has not created a task yet /// 4. Updating dynamic title to correspond correctly with selected project, null or 'today'.
 
 
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
 const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
 
+//! Testing:
+const LOCAL_STORAGE_TODAY_KEY = 'task.todayItemList';
+
 // Get lists data from local storage || if none exists, then create new empty array.
 let projectItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
 let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID);
+
+//! Testing:
+let todayItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_TODAY_KEY)) || [];
 
 // DOM selectors:
 const projectsContainer = document.querySelector('.projects-container');
@@ -37,19 +43,37 @@ function saveAndRender() {
 function save() {
     localStorage.setItem(LOCAL_STORAGE_LIST_KEY, JSON.stringify(projectItemList));
     localStorage.setItem(LOCAL_STORAGE_SELECTED_LIST_ID, selectedListId);
+    localStorage.setItem(LOCAL_STORAGE_TODAY_KEY, JSON.stringify(todayItemList));
 };
 
 function render() {
     const selectedList = projectItemList.find(item => item.id === selectedListId);
     // Removes existing nodes so project items aren't duplicated for every loop being run:
     clearElement(projectsContainer);
+    displayTodayTask(selectedList);
     renderProjectItem();
+    validNavbarRender(selectedList);
+};
 
-    // Check if projectsContainer is not empty and selectedList is true, then run function:
-    if (projectsContainer.hasChildNodes() && selectedList) {
-        renderTaskItem(selectedList)
+// Check if projectsContainer is not empty and selectedList is true && 'today' id is not currently selected, then run function:
+function validNavbarRender(selectedList) {
+    if (projectsContainer.hasChildNodes() && selectedList && selectedListId != '1') {
+        renderTaskItem(selectedList.tasks)
         renderTaskCount(selectedList)
-    };
+    } else {
+        renderTaskItem(todayItemList);
+    }
+};
+
+// Display main title with 'Today' or project title:
+function displayTodayTask(selectedList) {
+    // Default to 'Today' if no project lists are present:
+    if (selectedListId === '1' || projectItemList.length === 0) {
+        listTitle.innerText = 'Today';
+    } else if (selectedListId) {
+        listTitle.innerText = selectedList.projectName;
+    }
+    save();
 };
 
 // Clear all element nodes if projectItemList is empty or selectedListId is null:
@@ -110,7 +134,7 @@ function generateTask(title) {
 // Generate task items:
 function renderTaskItem(selectedList) {
     clearElement(taskItemsContainer)
-    selectedList.tasks.forEach((entry) => {
+    selectedList.forEach((entry) => {
         // const taskElement = document.importNode(template.content, true);
         // taskItemsContainer.append(taskElement);
 
@@ -143,8 +167,8 @@ function renderTaskItem(selectedList) {
         // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
         const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
         const completedTasks = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
-        selectedList.tasks.filter(item => {
-            if (item.complete === true) { completedTasks.push(item.id) }
+        selectedList.filter(item => {
+            if (item.complete === true && selectedListId) { completedTasks.push(item.id) }
         })
         if (completedTasks.includes(listStringConvert)) { taskListItem.classList.add('complete') }
 
@@ -161,33 +185,23 @@ function renderTaskCount(selectedList) {
     taskCounter.innerText = `${incompleteTaskCount} ${taskCounterText} remaining`
 };
 
-// Returns each task item from the selectedListId specific object: => this func currently being used inside renderTaskItem() but not this function specifically;
-// function getTaskItem() {
-//     const selectedList = projectItemList.find(item => item.id === selectedListId);
-//     selectedList.tasks.forEach(function(entry) {
-//         generateTask(entry.task);
-//     })
-// };
-
-
-
-//! TESTING END.
-
-//* EVENT LISTENERS:
-// Submit form once user creates value in 'Enter New Task' input:
-
+// Creating new task item:
 createNewTaskForm.addEventListener('submit', e => {
-    const getValue = addTaskInput.value;
     e.preventDefault();
-    if (selectedListId && getValue != null || getValue === '') {
+    const getValue = addTaskInput.value;
+    if (selectedListId && getValue) {
         // getResult => get currently selected object:
         const getResult = projectItemList.find(item => item.id === selectedListId);
         const newResult = generateTask(getValue); 
         addTaskInput.value = null;
-        getResult.tasks.push(newResult);
-        console.log(getResult);
-    } else {
-        return;
+
+        // Generating task input based on 'today' or project items:
+        if (selectedListId != 1 && getResult) {
+            getResult.tasks.push(newResult);
+        } else {
+            todayItemList.push(newResult);
+            console.log(todayItemList)
+        }
     }
     saveAndRender();
 });
@@ -204,13 +218,14 @@ createProjectForm.addEventListener('submit', e => { // Using 'createProjectForm'
     saveAndRender();
 });
 
-// Update title when a project name is clicked on:
+// Assign SelectedListId based on user click event on navbar:
 navbar.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'li') {
         selectedListId = e.target.id
-        listTitle.innerText = e.target.innerText;
-        saveAndRender();
+    } else if (e.target.tagName.toLowerCase() === 'h3') {
+        selectedListId = e.target.id
     }
+    saveAndRender();
 });
 
 // Delete project with click event:
