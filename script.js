@@ -68,9 +68,9 @@ function validNavbarRender(selectedList) {
 // Display main title with 'Today' or project title:
 function displayTodayTask(selectedList) {
     // Default to 'Today' if no project lists are present:
-    if (selectedListId === '1' || projectItemList.length === 0) {
+    if (selectedListId > 1 || projectItemList.length === 0) {
         listTitle.innerText = 'Today';
-    } else if (selectedListId) {
+    } else if (selectedList && selectedListId != '') {
         listTitle.innerText = selectedList.projectName;
     }
     save();
@@ -163,20 +163,30 @@ function renderTaskItem(selectedList) {
         deleteBtnTask.setAttribute('type', 'submit');
         deleteBtnTask.innerHTML = '&#10005'
 
+        toggleComplete(selectedList, taskListItem);
 
-        // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
-        const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
-        const completedTasks = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
-        selectedList.filter(item => {
-            if (item.complete === true && selectedListId) { completedTasks.push(item.id) }
-        })
-        if (completedTasks.includes(listStringConvert)) { taskListItem.classList.add('complete') }
 
         taskItemLabel.append(taskItemSpan, taskItemInput);
         divTaskItems.append(taskItemLabel, taskListItem, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
     })
 };
+
+function toggleComplete(selectedList, taskListItem) {
+    if (selectedListId > 1) {
+        // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
+        const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
+        const completedTasks = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
+        selectedList.filter(item => { if (item.complete === true && selectedListId) { completedTasks.push(item.id) } });
+
+        if (completedTasks.includes(listStringConvert)) { taskListItem.classList.add('complete') }
+    } else if (selectedListId === '1') {
+        const todayStringConvert = taskListItem.id.toString();
+        const completedTodayTask = [];
+        todayItemList.filter(item => { if (item.complete === true) { completedTodayTask.push(item.id) } });
+        if (completedTodayTask.includes(todayStringConvert)) { taskListItem.classList.add('complete') };
+    }
+}
 
 // Deal with the task counter in the task container:
 function renderTaskCount(selectedList) {
@@ -242,12 +252,19 @@ projectsContainer.addEventListener('click', e => {
 // Toggle true/false for task input:
 taskItemsContainer.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'input') {
-        // Get the selected object from object array:
-        const selectedList = projectItemList.find(property => property.id === selectedListId);
-        // Get the item of the clicked on target id and id of the specific task that matches:
-        const selectedTaskItem = selectedList.tasks.find(property => property.id === e.target.id);
-        selectedTaskItem.complete = e.target.checked; // Toggles 'true/false' to 'complete' property.
-        renderTaskItem(selectedList);
+        if (selectedListId > 1) {
+            // Get the selected object from object array:
+            const selectedList = projectItemList.find(property => property.id === selectedListId);
+            // Get the item of the clicked on target id and id of the specific task that matches:
+            const selectedTaskItem = selectedList.tasks.find(property => property.id === e.target.id);
+            selectedTaskItem.complete = e.target.checked; // Toggles 'true/false' to 'complete' property.
+            renderTaskItem(selectedList);
+        } else {
+            const selectedTodayItem = todayItemList.find(property => property.id === e.target.id);
+            console.log("check")
+            selectedTodayItem.complete = e.target.checked;
+            renderTaskItem(todayItemList);
+        }
     };
     save();
 });
@@ -260,12 +277,20 @@ taskItemsContainer.addEventListener('click', e => {
         
         taskItemsAll.forEach(item => {
             if (e.target.id === item.id) {
-                // Iterate through each task and if matching id is found, delete that task.
-                selectedList.tasks.forEach(element => {
-                    if (element.id === item.id) {
-                        selectedList.tasks.splice(selectedList.tasks.indexOf(element), 1); // Select tasks of specific project and remove the matching element(task) from projectListItem array.
-                    }
-                });
+                if (selectedListId > 1) {
+                    // Iterate through each task and if matching id is found, delete that task.
+                    selectedList.tasks.forEach(element => {
+                        if (element.id === item.id) {
+                            selectedList.tasks.splice(selectedList.tasks.indexOf(element), 1); // Select tasks of specific project and remove the matching element(task) from projectListItem array.
+                        }
+                    });
+                } else if (selectedListId === '1') {
+                    todayItemList.forEach(element => {
+                        if (element.id === item.id) {
+                            todayItemList.splice(todayItemList.indexOf(element), 1);
+                        }
+                    })
+                }
             }
         })
     }
