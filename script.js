@@ -68,7 +68,7 @@ function validNavbarRender(selectedList) {
 // Display main title with 'Today' or project title:
 function displayTodayTask(selectedList) {
     // Default to 'Today' if no project lists are present:
-    if (selectedListId > 1 || projectItemList.length === 0) {
+    if (projectItemList.length === 0) {
         listTitle.innerText = 'Today';
     } else if (selectedList && selectedListId != '') {
         listTitle.innerText = selectedList.projectName;
@@ -165,7 +165,6 @@ function renderTaskItem(selectedList) {
 
         toggleComplete(selectedList, taskListItem);
 
-
         taskItemLabel.append(taskItemSpan, taskItemInput);
         divTaskItems.append(taskItemLabel, taskListItem, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
@@ -178,9 +177,8 @@ function toggleComplete(selectedList, taskListItem) {
         const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
         const completedTasks = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
         selectedList.filter(item => { if (item.complete === true && selectedListId) { completedTasks.push(item.id) } });
-
         if (completedTasks.includes(listStringConvert)) { taskListItem.classList.add('complete') }
-    } else if (selectedListId === '1') {
+    } else {
         const todayStringConvert = taskListItem.id.toString();
         const completedTodayTask = [];
         todayItemList.filter(item => { if (item.complete === true) { completedTodayTask.push(item.id) } });
