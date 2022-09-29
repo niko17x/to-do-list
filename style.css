@@ -148,7 +148,7 @@ button:hover {
 .create-project-form {
     display: grid;
     gap: 0.7rem;
-    margin-top: 5rem;
+    margin-top: 14rem;
 }
 
 .create-project-btn {
