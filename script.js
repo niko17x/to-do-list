@@ -4,15 +4,11 @@
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
 const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
-
-//! Testing:
 const LOCAL_STORAGE_TODAY_KEY = 'task.todayItemList';
 
 // Get lists data from local storage || if none exists, then create new empty array.
 let projectItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
 let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECTED_LIST_ID);
-
-//! Testing:
 let todayItemList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_TODAY_KEY)) || [];
 
 // DOM selectors:
@@ -47,19 +43,20 @@ function save() {
 };
 
 function render() {
+    if (selectedListId == null) { selectedListId = '1' } // Set default id if no projects exist.
     const selectedList = projectItemList.find(item => item.id === selectedListId);
     // Removes existing nodes so project items aren't duplicated for every loop being run:
     clearElement(projectsContainer);
     displayTodayTask(selectedList);
     renderProjectItem();
     validNavbarRender(selectedList);
+    renderTaskCount(selectedList);
 };
 
 // Check if projectsContainer is not empty and selectedList is true && 'today' id is not currently selected, then run function:
 function validNavbarRender(selectedList) {
     if (projectsContainer.hasChildNodes() && selectedList && selectedListId != '1') {
         renderTaskItem(selectedList.tasks)
-        renderTaskCount(selectedList)
     } else {
         renderTaskItem(todayItemList);
     }
@@ -68,7 +65,7 @@ function validNavbarRender(selectedList) {
 // Display main title with 'Today' or project title:
 function displayTodayTask(selectedList) {
     // Default to 'Today' if no project lists are present:
-    if (projectItemList.length === 0) {
+    if (projectItemList.length === 0 || selectedListId === '1') {
         listTitle.innerText = 'Today';
     } else if (selectedList && selectedListId != '') {
         listTitle.innerText = selectedList.projectName;
@@ -134,7 +131,7 @@ function generateTask(title) {
 // Generate task items:
 function renderTaskItem(selectedList) {
     clearElement(taskItemsContainer)
-    selectedList.forEach((entry) => {
+    selectedList.forEach(entry => {
         // const taskElement = document.importNode(template.content, true);
         // taskItemsContainer.append(taskElement);
 
@@ -171,6 +168,7 @@ function renderTaskItem(selectedList) {
     })
 };
 
+// Add .complete class to tasks where task.complete === true:
 function toggleComplete(selectedList, taskListItem) {
     if (selectedListId > 1) {
         // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
@@ -187,10 +185,16 @@ function toggleComplete(selectedList, taskListItem) {
 }
 
 // Deal with the task counter in the task container:
-function renderTaskCount(selectedList) {
-    const incompleteTaskCount = selectedList.tasks.filter(item => !item.complete).length // Get the length of 'complete: false' properties in tasks.
-    const taskCounterText = incompleteTaskCount === 1 ? "task" : "tasks";
-    taskCounter.innerText = `${incompleteTaskCount} ${taskCounterText} remaining`
+function renderTaskCount(selectedList) {    
+    if (selectedListId > 1) {
+        const incompleteTaskCount = selectedList.tasks.filter(item => !item.complete).length // Get the length of 'complete: false' properties in tasks.
+        const taskCounterText = (incompleteTaskCount) === 1 ? "task" : "tasks";
+        taskCounter.innerText = `${incompleteTaskCount} ${taskCounterText} remaining`
+    } else if (selectedListId === '1') {
+        const incompleteTodayTask = todayItemList.filter(item => !item.complete).length
+        const taskCounterText = (incompleteTodayTask) === 1 ? "task" : "tasks";
+        taskCounter.innerText = `${incompleteTodayTask} ${taskCounterText} remaining`
+    }
 };
 
 // Creating new task item:
@@ -259,7 +263,6 @@ taskItemsContainer.addEventListener('click', e => {
             renderTaskItem(selectedList);
         } else {
             const selectedTodayItem = todayItemList.find(property => property.id === e.target.id);
-            console.log("check")
             selectedTodayItem.complete = e.target.checked;
             renderTaskItem(todayItemList);
         }
