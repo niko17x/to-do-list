@@ -1,7 +1,12 @@
 /* ! GENERAL SELECTORS */
 @font-face {
-    font-family: ralewayz;
+    font-family: semiBoldRaleway;
     src: url(./font/Raleway-VariableFont_wght.ttf);
+}
+
+@font-face {
+    font-family: boldRaleway;
+    src: url(./font/Raleway-ExtraBold.ttf);
 }
 
 :root {
@@ -11,28 +16,25 @@
 }
 
 * {
-    font-family: raleway;
+    font-family: semiBoldRaleway;
     box-sizing: border-box;
     background-color: var(--main-bg-green-color);
 }
 
-body {
-    font-family: customFont;
-}
-
 h1 {
+    font-family: boldRaleway;
     font-size: 5rem;
-    font-weight: 800;
     margin: 0.5rem;
 }
 
 h2 {
+    font-family: boldRaleway;
     font-size: 3.5rem;
-    font-weight: 700;
     white-space: nowrap;
 }
 
 h3 {
+    font-family: boldRaleway;
     font-size: 2rem;
     white-space: nowrap;
     cursor: pointer;
@@ -293,6 +295,7 @@ input[type="checkbox"]:checked::before {
     /* display: none; */
     visibility: visible;
     opacity: 1;
+    transition: visibility 0.7s, opacity 0.5s linear;
 }
 
 .toggle {
