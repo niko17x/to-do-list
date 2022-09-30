@@ -185,6 +185,7 @@ function toggleComplete(selectedList, taskListItem) {
 }
 
 // Deal with the task counter in the task container:
+// Todo: Make this function more efficient - Too repetitive:
 function renderTaskCount(selectedList) {    
     if (selectedListId > 1) {
         const incompleteTaskCount = selectedList.tasks.filter(item => !item.complete).length // Get the length of 'complete: false' properties in tasks.
@@ -260,14 +261,14 @@ taskItemsContainer.addEventListener('click', e => {
             // Get the item of the clicked on target id and id of the specific task that matches:
             const selectedTaskItem = selectedList.tasks.find(property => property.id === e.target.id);
             selectedTaskItem.complete = e.target.checked; // Toggles 'true/false' to 'complete' property.
-            renderTaskItem(selectedList);
+            // renderTaskItem(selectedList);
         } else {
             const selectedTodayItem = todayItemList.find(property => property.id === e.target.id);
             selectedTodayItem.complete = e.target.checked;
-            renderTaskItem(todayItemList);
+            // renderTaskItem(todayItemList);
         }
+        validNavbarRender();
     };
-    save();
 });
 
 // Deleting specific task items:
