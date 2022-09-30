@@ -1,4 +1,9 @@
 /* ! GENERAL SELECTORS */
+@font-face {
+    font-family: ralewayz;
+    src: url(./font/Raleway-VariableFont_wght.ttf);
+}
+
 :root {
     --main-bg-green-color: rgb(237, 255, 248);
     --main-gray-color: rgb(202, 202, 202);
@@ -6,36 +11,47 @@
 }
 
 * {
+    font-family: raleway;
     box-sizing: border-box;
     background-color: var(--main-bg-green-color);
 }
 
+body {
+    font-family: customFont;
+}
+
 h1 {
-    font-size: 4rem;
+    font-size: 5rem;
+    font-weight: 800;
+    margin: 0.5rem;
 }
 
 h2 {
-    font-size: 3rem;
+    font-size: 3.5rem;
+    font-weight: 700;
     white-space: nowrap;
 }
 
 h3 {
     font-size: 2rem;
     white-space: nowrap;
+    cursor: pointer;
 }
 
 img {
-    width: 2rem;
+    width: 1.7rem;
     height: auto;
 }
 
 li {
     text-decoration: none;
     list-style: none;
+    font-size: 1.5rem;
 }
 
 /* All inputs affected: */
 input {
+    font-size: 1.3rem;
     text-decoration: none;
     border-left: none;
     border-top: none;
@@ -101,26 +117,25 @@ button:hover {
 
 /* ! NAVBAR SECTION */
 .navbar-today,
-.navbar-projects {
-    /* display: flex; */
-    /* flex-direction: column; */
+.navbar-project {
     display: grid;
+    grid-template-columns: repeat(3, min-content);
+    gap: 1rem;
 }
 
-.img-today {
+
+.nav-img {
     place-self: center;
 }
 
-.chevron-down {
-    align-self: center;
-    width: 1rem;
-    height: auto;
+.chevron {
+    cursor: pointer;
 }
 
 .project-item {
     display: grid;
     grid-template-columns: min-content auto;
-    gap: 0.5rem;
+    gap: 1rem;
     justify-self: flex-start;
     margin-left: 1rem;
 }
@@ -129,6 +144,7 @@ button:hover {
     align-self: center;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .projects-container {
@@ -148,7 +164,7 @@ button:hover {
 .create-project-form {
     display: grid;
     gap: 0.7rem;
-    margin-top: 14rem;
+    margin-top: 19rem;
 }
 
 .create-project-btn {
@@ -164,10 +180,16 @@ button:hover {
 }
 
 /* ! LIST SECTION */
-
 .list-header {
     display: grid;
     grid-template-columns: 4fr 1fr;
+}
+
+.list-title {
+    max-width: 30rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .task-counter {
@@ -203,9 +225,8 @@ button:hover {
 
 .task-items-container {
     /* display: grid; */
-    /* max-height: 40vh; */
     overflow: scroll;
-    height: 40vh;
+    height: 50vh;
 }
 
 .task-items {
@@ -224,6 +245,7 @@ button:hover {
 input[type="checkbox"] {
     display: grid;
     place-content: center;
+    cursor: pointer;
 
     -webkit-appearance: none;
     appearance: none;
@@ -265,4 +287,16 @@ input[type="checkbox"]:checked::before {
 
 .complete {
     text-decoration: line-through;
+}
+
+.projects-container {
+    /* display: none; */
+    visibility: visible;
+    opacity: 1;
+}
+
+.toggle {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.7s, opacity 0.5s linear;
 }
