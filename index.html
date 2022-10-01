@@ -6,31 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer="defer"></script>
+
     <title>To-Do List</title>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <h1 class="header-title">To-Do List</h1>
+            <h1 class="header-title">
+                To-Do List
+                <img src="./img/checkbox-marked-circle-plus-outline.svg" alt="">
+            </h1>
         </div>
 
         <div class="body">
             <div class="navbar">
                 <div class="navbar-today">
-                    <h3 class="subtitle subtitle-today" id="1">
-                        <img src="./img/calendar-today-outline.svg" alt="" class="img-today">
-                        Today
-                    </h2>
+                    <img src="./img/calendar-today-outline.svg" alt="" class="nav-img img-today">
+                    <h3 class="subtitle subtitle-today" id="1">Today</h3>
                 </div>
     
                 <div class="navbar-projects">
-                    
-                    <h3 class="subtitle subtitle-projects">
-                        <img src="./img/pencil-ruler.svg" alt="img-project">
-                        Projects
-                        <img class="chevron-down" src="./img/chevron-down.svg" alt="chevron down">
-                    </h3>
+                    <div class="navbar-project">
+                        <img src="./img/pencil-ruler.svg" alt="img-project" class="nav-img">
+                        <h3 class="subtitle subtitle-projects">Projects</h3>
+                        <img src="./img/chevron-double-down.svg" alt="chevron down" class="nav-img chevron">
+                    </div>
                     
                     <div class="projects-container">
                         <!-- DEMO => Individual project items: -->

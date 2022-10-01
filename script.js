@@ -1,4 +1,4 @@
-// TODO: 1. Deleting individual tasks within projects - DONE /// 2. Clicking on 'Today' on the navbar displays 'Today task items' and not the project task items /// 3. Insert 'filler task items' when new project is created and user has not created a task yet /// 4. Updating dynamic title to correspond correctly with selected project, null or 'today'.
+// TODO: 1. Deleting individual tasks within projects - DONE /// 2. Clicking on 'Today' on the navbar displays 'Today task items' and not the project task items - DONE /// 3. Insert 'filler task items' when new project is created and user has not created a task yet /// 4. Updating dynamic title to correspond correctly with selected project, null or 'today'.
 
 
 // Dealing with local storage using KEYS:
@@ -28,6 +28,7 @@ const projectItemTitle = document.querySelectorAll('.project-item-title');
 const template = document.querySelector('template');
 const taskItems = document.querySelector('.task-items');
 const taskCounter = document.querySelector('.task-counter');
+const chevron = document.querySelector('.chevron');
 
 
 
@@ -219,12 +220,13 @@ createNewTaskForm.addEventListener('submit', e => {
     saveAndRender();
 });
 
-// Validate user project name value input from user and if valid, push the newly created object using 'generateUniqueId(getValue) and render to page:
+// Create and validate new project items through user input:
 createProjectForm.addEventListener('submit', e => { // Using 'createProjectForm' as an event is a way around selecting the specific DOM element even though that element may have not yet rendered/generated on the page which causes an error in console.
     e.preventDefault();
     const getValue = createProjectInput.value;
     // If str is null or empty, don't return any data:
     if (getValue == null || getValue === '') return;
+    if (projectsContainer.classList.contains('toggle')) { projectsContainer.classList.remove('toggle') }
     const newProjectTitle = generateUniqueId(getValue);
     createProjectInput.value = null; // Reset the value once accepted.
     projectItemList.push(newProjectTitle); // Push valid new object to array.
@@ -298,6 +300,19 @@ taskItemsContainer.addEventListener('click', e => {
     }
     saveAndRender();
 });
+
+// Toggle projectsContainer and change chevron img when click event on chevron img:
+chevron.addEventListener('click', e => {
+    projectsContainer.classList.toggle('toggle')
+    if (e.target.src === 'http://127.0.0.1:5500/img/chevron-double-down.svg') {
+        chevron.src = 'http://127.0.0.1:5500/img/chevron-double-up.svg'
+    } else {
+        chevron.src = 'http://127.0.0.1:5500/img/chevron-double-down.svg'
+    }
+});
+
+
+
 
 function printWindow() {
     window.addEventListener('click', e => {
