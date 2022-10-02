@@ -126,6 +126,7 @@ function generateTask(title) {
         id: Date.now().toString(),
         task: title,
         complete: false,
+        highPriority: false,
     }
 };
 
@@ -155,6 +156,14 @@ function renderTaskItem(selectedList) {
         taskListItem.classList.add('task-list-item');
         taskListItem.id = entry.id;
         taskListItem.innerText = entry.task;
+        const priorityBtn = document.createElement('button');
+        // priorityBtn.setAttribute('type', 'submit');
+        priorityBtn.id = entry.id;
+        priorityBtn.classList.add('priority-btn');
+        const priorityFlag = document.createElement('img');
+        priorityFlag.setAttribute('src', 'http://127.0.0.1:5500/img/flag-triangle.svg')
+        priorityFlag.classList.add('priority-flag')
+        priorityFlag.id = entry.id;
         const deleteBtnTask = document.createElement('button');
         deleteBtnTask.id = entry.id;
         deleteBtnTask.classList.add('delete-btn-task');
@@ -162,14 +171,16 @@ function renderTaskItem(selectedList) {
         deleteBtnTask.innerHTML = '&#10005'
 
         toggleComplete(selectedList, taskListItem);
+        priorityFlagToggle(selectedList, taskListItem);
 
+        priorityBtn.append(priorityFlag);
         taskItemLabel.append(taskItemSpan, taskItemInput);
-        divTaskItems.append(taskItemLabel, taskListItem, deleteBtnTask);
+        divTaskItems.append(taskItemLabel, taskListItem, priorityBtn, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
     })
 };
 
-// Add .complete class to tasks where task.complete === true:
+// Add .complete class to tasks where task.complete === true (line through):
 function toggleComplete(selectedList, taskListItem) {
     if (selectedListId > 1) {
         // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
@@ -186,7 +197,6 @@ function toggleComplete(selectedList, taskListItem) {
 }
 
 // Deal with the task counter in the task container:
-// Todo: Make this function more efficient - Too repetitive:
 function renderTaskCount(selectedList) {    
     if (selectedListId > 1) {
         const incompleteTaskCount = selectedList.tasks.filter(item => !item.complete).length // Get the length of 'complete: false' properties in tasks.
@@ -198,6 +208,46 @@ function renderTaskCount(selectedList) {
         taskCounter.innerText = `${incompleteTodayTask} ${taskCounterText} remaining`
     }
 };
+
+// Dealing with high priority flag on task items:
+function priorityFlagToggle(selectedList, taskListItem) {
+    // Go through projectItemList.tasks.highPriority => if true, add class:
+    const listStringConvert = taskListItem.id.toString();
+    const highPriorityTasks = []; // Holds all the tasks.highPriority = true ids.
+    const highPriorityTodayTasks = [];
+
+    if (selectedListId > 1) {
+        selectedList.filter(item => {if (item.highPriority === true && selectedListId) {highPriorityTasks.push(item.id)}});
+        if (highPriorityTasks.includes(listStringConvert)) {taskListItem.classList.toggle('high-priority')}
+    } else {
+        todayItemList.filter(item => {if (item.highPriority === true) {highPriorityTodayTasks.push(item.id)}});
+        if (highPriorityTodayTasks.includes(listStringConvert)) {taskListItem.classList.add('high-priority')};
+    }
+};
+
+// User clicks on priority flag and adds true/false to projectItemList:
+// Todo: Deal with priority flag for both 'today' and project items:
+taskItemsContainer.addEventListener('click', e => {
+    if (e.target.classList.contains('priority-btn') || e.target.tagName.toLowerCase() === 'img') {
+        const selectedList = projectItemList.find(item => item.id === selectedListId);
+        
+        if (selectedListId > 1) {
+            const selectedTaskItem = selectedList.tasks.find(item => item.id === e.target.id);
+            if (!selectedTaskItem.highPriority) {
+                selectedTaskItem.highPriority = true;
+            } else {
+                selectedTaskItem.highPriority = false;
+            }
+        } else {
+            const selectedTodayItem = todayItemList.find(item => item.id === e.target.id);        
+            if (!selectedTodayItem.highPriority) {
+                selectedTodayItem.highPriority = true;
+            } else {
+                selectedTodayItem.highPriority = false;
+            }
+        }
+    };
+});
 
 // Creating new task item:
 createNewTaskForm.addEventListener('submit', e => {
@@ -275,7 +325,7 @@ taskItemsContainer.addEventListener('click', e => {
 
 // Deleting specific task items:
 taskItemsContainer.addEventListener('click', e => {
-    if (e.target.tagName.toLowerCase() === 'button') {
+    if (e.target.classList.contains('delete-btn-task')) {
         const selectedList = projectItemList.find(item => item.id === selectedListId);
         const taskItemsAll = document.querySelectorAll('.task-items');
         
@@ -288,7 +338,7 @@ taskItemsContainer.addEventListener('click', e => {
                             selectedList.tasks.splice(selectedList.tasks.indexOf(element), 1); // Select tasks of specific project and remove the matching element(task) from projectListItem array.
                         }
                     });
-                } else if (selectedListId === '1') {
+                } else {
                     todayItemList.forEach(element => {
                         if (element.id === item.id) {
                             todayItemList.splice(todayItemList.indexOf(element), 1);
