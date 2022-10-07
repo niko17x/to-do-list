@@ -121,12 +121,13 @@ function clearElement(element) {
 };
 
 // Generate an object for tasks inside projectListItem array:
-function generateTask(title) {
+function generateTask(title, date) {
     return {
         id: Date.now().toString(),
         task: title,
         complete: false,
         highPriority: false,
+        dueDate: date, //! Testing.
     }
 };
 
@@ -156,6 +157,13 @@ function renderTaskItem(selectedList) {
         taskListItem.classList.add('task-list-item');
         taskListItem.id = entry.id;
         taskListItem.innerText = entry.task;
+
+        //! Testing (07):
+        const spanDueDate = document.createElement('span');
+        spanDueDate.classList.add('span-due-date')
+        spanDueDate.innerText = entry.dueDate;
+
+
         const priorityBtn = document.createElement('button');
         // priorityBtn.setAttribute('type', 'submit');
         priorityBtn.id = entry.id;
@@ -176,6 +184,9 @@ function renderTaskItem(selectedList) {
 
         priorityBtn.append(priorityFlag);
         taskItemLabel.append(taskItemSpan, taskItemInput);
+
+        //! Testing (07):
+        taskListItem.append(spanDueDate)
         
         divTaskItems.append(taskItemLabel, taskListItem, priorityBtn, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
@@ -185,7 +196,7 @@ function renderTaskItem(selectedList) {
 
 // Todo: Issue is the clearElement() function before rendering is preventing any input elements from 'sticking' cause it's wiping away every time. 
 // ? => Create a date input element next to the 'Enter New Task' input => User creates task along with choosing a due date => ProjectItemList has a new property called 'dueDate' and is updated when user enters a date => the date is displayed within the task item => There should also be a new 'edit' button that pops open a modal allowing user to edit the task and due date and potentially other properties.
-flatpickr(".due-date", {
+const datePicker = flatpickr(".due-date", {
     enableTime: true,
     // dateFormat: "Y-m-d H:i",
     altInput: true,
@@ -240,6 +251,11 @@ function priorityFlagToggle(selectedList, taskListItem) {
     }
 };
 
+// Open modal to edit task items:
+function editTaskItem() {
+    
+};
+
 // User clicks on priority flag and adds true/false to projectItemList:
 taskItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('priority-btn') || e.target.tagName.toLowerCase() === 'img') {
@@ -267,19 +283,31 @@ taskItemsContainer.addEventListener('click', e => {
 createNewTaskForm.addEventListener('submit', e => {
     e.preventDefault();
     const getValue = addTaskInput.value;
+    const inputDueDate = document.querySelector('.due-date-input'); //! Testing.
+    const getDate = inputDueDate.value; //! Testing.
     if (selectedListId && getValue) {
         // getResult => get currently selected object:
         const getResult = projectItemList.find(item => item.id === selectedListId);
-        const newResult = generateTask(getValue); 
-        addTaskInput.value = null;
+        let newResult;
+        //! Testing => Deal with date input value:
+        if (getDate) {
+            newResult = generateTask(getValue, getDate);
+        } else {
+            newResult = generateTask(getValue, null); 
+        }
+
+
 
         // Generating task input based on 'today' or project items:
-        if (selectedListId != 1 && getResult) {
+        if (selectedListId > 1 && getResult) {
             getResult.tasks.push(newResult);
         } else {
             todayItemList.push(newResult);
             console.log(todayItemList)
         }
+        addTaskInput.value = null;
+        datePicker.clear(); // Clear flatpickr input field.
+        
     }
     saveAndRender();
 });

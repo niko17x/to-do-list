@@ -267,6 +267,21 @@ button:hover {
     /* justify-content: space-between; */
     /* grid-template-columns: auto min-content; */
     display: grid;
+    grid-template-rows: repeat(2, auto);
+    gap: 0.3rem;
+    /* grid-template-columns: auto auto; */
+}
+
+.span-due-date {
+    font-size: 0.7rem;
+    /* text-align: end; */
+    /* border-top: 2px solid var(--main-gray-color); */
+    background-color: transparent;
+    /* place-self: center; */
+}
+
+.span-due-date::before {
+    content: 'Due Date: ';
 }
 
 .task-item-label {
