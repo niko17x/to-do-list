@@ -199,6 +199,13 @@ button:hover {
     place-self: center;
 }
 
+.create-task {
+    display: grid;
+    /* grid-template-columns: auto min-content; */
+    grid-template-columns: repeat(2, auto);
+    gap: 1rem;
+}
+
 .add-task-label {
     align-self: center;
 }
@@ -206,12 +213,32 @@ button:hover {
 .add-task-input {
     /* border: none; */
     margin-left: 1rem;
-    width: 45vw;
+    width: 30vw;
 }
 
 .add-task-btn {
-    width: 7vw;
+    width: 5vw;
 }
+
+.create-new-task-form {
+    display: grid;
+    grid-template-columns: min-content auto;
+}
+
+/* !TESTING */
+.due-date-form {
+    place-self: center;
+}
+
+
+.due-date-label {
+}
+
+.due-date-input {
+    width: 29vw;
+    text-align: center;
+}
+
 
 
 /* ! LIST BODY SECTION */
@@ -219,11 +246,6 @@ button:hover {
 .list-body {
     display: grid;
     /* grid-template-columns: min-content auto; */
-}
-
-.create-new-task-form {
-    display: grid;
-    grid-template-columns: min-content auto;
 }
 
 .task-items-container {
@@ -240,6 +262,13 @@ button:hover {
     margin-right: 1rem;
 }
 
+.task-list-item {
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* grid-template-columns: auto min-content; */
+    display: grid;
+}
+
 .task-item-label {
     place-self: center;
 }
@@ -251,7 +280,8 @@ button:hover {
 }
 
 /* Styling each task list */
-input[type="checkbox"] {
+input[type="checkbox"],
+input[type="date"] {
     display: grid;
     place-content: center;
     cursor: pointer;
@@ -317,3 +347,4 @@ input[type="checkbox"]:checked::before {
 .high-priority {
     background-color: var(--priority-flag-color) !important;
 }
+

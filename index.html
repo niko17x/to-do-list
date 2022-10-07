@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer="defer"></script>
     <script src="script.js" defer="defer"></script>
+    
+
 
     <title>To-Do List</title>
 </head>
@@ -64,6 +68,11 @@
                                 <input class="add-task-input" type="text" name="add-task" placeholder="Enter New Task">
                             </label>
                         </form>
+                        <form class="due-date-form" action="">
+                            <label for="due-date-label due-date">
+                                <input type="date" id="due-date" class="due-date-input due-date" placeholder="Select Date">
+                            </label>
+                        </form>
                     </div>
                     <!-- Demo task item (Use Template): -->
                     <div class="task-items-container">
@@ -73,7 +82,13 @@
                                 <span class="task-item-span"></span>
                                 <input class="task-item-input" type="checkbox" name="task" checked>
                             </label>
-                            <li class="task-list-item">Get Puppies from daycare.</li>
+                            <li class="task-list-item">Get Puppies from daycare.
+                                <label for="due-date"></label>
+                                <input type="date" placeholder="Select Date">
+                            </li>
+                            <button class="priority-btn" type="submit">
+                                <img class="priority-flag" src="/img/flag-triangle.svg" alt="">
+                            </button>
                             <button class="delete-btn-task" type="submit">&#10005</button>
                         </div> -->
 
@@ -92,6 +107,5 @@
             <li class="task-list-item"></li>
         </div>
     </template>
-
 </body>
 </html>
