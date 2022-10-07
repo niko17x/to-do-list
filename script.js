@@ -1,4 +1,4 @@
-// TODO: 1. Deleting individual tasks within projects - DONE /// 2. Clicking on 'Today' on the navbar displays 'Today task items' and not the project task items - DONE /// 3. Insert 'filler task items' when new project is created and user has not created a task yet /// 4. Updating dynamic title to correspond correctly with selected project, null or 'today'.
+// TODO: 1. CSS white frosted color design in container background and maybe each completed task item (blur effect) /// 2. Adding 'due date' to each task item /// 3. 
 
 
 // Dealing with local storage using KEYS:
@@ -160,6 +160,7 @@ function renderTaskItem(selectedList) {
         // priorityBtn.setAttribute('type', 'submit');
         priorityBtn.id = entry.id;
         priorityBtn.classList.add('priority-btn');
+
         const priorityFlag = document.createElement('img');
         priorityFlag.setAttribute('src', 'http://127.0.0.1:5500/img/flag-triangle.svg')
         priorityFlag.classList.add('priority-flag')
@@ -175,10 +176,24 @@ function renderTaskItem(selectedList) {
 
         priorityBtn.append(priorityFlag);
         taskItemLabel.append(taskItemSpan, taskItemInput);
+        
         divTaskItems.append(taskItemLabel, taskListItem, priorityBtn, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
     })
 };
+
+
+// Todo: Issue is the clearElement() function before rendering is preventing any input elements from 'sticking' cause it's wiping away every time. 
+// ? => Create a date input element next to the 'Enter New Task' input => User creates task along with choosing a due date => ProjectItemList has a new property called 'dueDate' and is updated when user enters a date => the date is displayed within the task item => There should also be a new 'edit' button that pops open a modal allowing user to edit the task and due date and potentially other properties.
+flatpickr(".due-date", {
+    enableTime: true,
+    // dateFormat: "Y-m-d H:i",
+    altInput: true,
+    altFormat: "F j, Y (h:i K)",
+    allowInput: true,
+    shorthandCurrentMonth: true,
+    minuteIncrement: 1,
+});
 
 // Add .complete class to tasks where task.complete === true (line through):
 function toggleComplete(selectedList, taskListItem) {
@@ -226,7 +241,6 @@ function priorityFlagToggle(selectedList, taskListItem) {
 };
 
 // User clicks on priority flag and adds true/false to projectItemList:
-// Todo: Deal with priority flag for both 'today' and project items:
 taskItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('priority-btn') || e.target.tagName.toLowerCase() === 'img') {
         const selectedList = projectItemList.find(item => item.id === selectedListId);
@@ -306,7 +320,7 @@ projectsContainer.addEventListener('click', e => {
 
 // Toggle true/false for task input:
 taskItemsContainer.addEventListener('click', e => {
-    if (e.target.tagName.toLowerCase() === 'input') {
+    if (e.target.classList.contains('task-item-input')) {
         if (selectedListId > 1) {
             // Get the selected object from object array:
             const selectedList = projectItemList.find(property => property.id === selectedListId);
@@ -370,6 +384,17 @@ function printWindow() {
     });
 };
 // printWindow();
-    
+  
+
+
+
+
+
+
+
+
+
+
+
 
 render();
