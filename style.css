@@ -239,8 +239,6 @@ button:hover {
     text-align: center;
 }
 
-
-
 /* ! LIST BODY SECTION */
 
 .list-body {
@@ -262,14 +260,17 @@ button:hover {
     margin-right: 1rem;
 }
 
-.task-list-item {
-    /* display: flex; */
-    /* justify-content: space-between; */
-    /* grid-template-columns: auto min-content; */
+.task-item-box {
     display: grid;
     grid-template-rows: repeat(2, auto);
-    gap: 0.3rem;
-    /* grid-template-columns: auto auto; */
+    gap: 0.2rem;
+    background: var(--mint-color);
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+
+.task-list-item {
+    background: transparent;
 }
 
 .span-due-date {
@@ -326,13 +327,13 @@ input[type="checkbox"]:checked::before {
     border-radius: 50%;
 }
 
-.task-items > li {
+/* .task-items > li {
     list-style: none;
     align-self: flex-start;
     background: var(--mint-color);
     border-radius: 10px;
     padding: 0.7rem;
-}
+} */
 
 /* ! DYNAMICALLY ACTIVATED SELECTORS - JS */
 .active {
