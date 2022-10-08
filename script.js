@@ -29,6 +29,7 @@ const template = document.querySelector('template');
 const taskItems = document.querySelector('.task-items');
 const taskCounter = document.querySelector('.task-counter');
 const chevron = document.querySelector('.chevron');
+const modal = document.querySelector('.modal-container');
 
 
 
@@ -127,7 +128,7 @@ function generateTask(title, date) {
         task: title,
         complete: false,
         highPriority: false,
-        dueDate: date, //! Testing.
+        dueDate: date,
     }
 };
 
@@ -158,21 +159,27 @@ function renderTaskItem(selectedList) {
         taskListItem.id = entry.id;
         taskListItem.innerText = entry.task;
 
-        //! Testing (07):
         const spanDueDate = document.createElement('span');
         spanDueDate.classList.add('span-due-date')
         spanDueDate.innerText = entry.dueDate;
 
+        // ! Testing (07) => Edit button for each task item:
+        const editBtn = document.createElement('button');
+        editBtn.id = entry.id;
+        editBtn.classList.add('edit-btn');
+        const editBtnImg = document.createElement('img');
+        editBtnImg.setAttribute('src', 'http://127.0.0.1:5500/img/circle-edit-outline.svg');
+        editBtnImg.id = entry.id;
+        editBtnImg.classList.add('edit-btn-img')
 
         const priorityBtn = document.createElement('button');
         // priorityBtn.setAttribute('type', 'submit');
         priorityBtn.id = entry.id;
         priorityBtn.classList.add('priority-btn');
-
-        const priorityFlag = document.createElement('img');
-        priorityFlag.setAttribute('src', 'http://127.0.0.1:5500/img/flag-triangle.svg')
-        priorityFlag.classList.add('priority-flag')
-        priorityFlag.id = entry.id;
+        const priorityFlagImg = document.createElement('img');
+        priorityFlagImg.setAttribute('src', 'http://127.0.0.1:5500/img/flag-triangle.svg')
+        priorityFlagImg.classList.add('priority-flag-img')
+        priorityFlagImg.id = entry.id;
         const deleteBtnTask = document.createElement('button');
         deleteBtnTask.id = entry.id;
         deleteBtnTask.classList.add('delete-btn-task');
@@ -182,13 +189,13 @@ function renderTaskItem(selectedList) {
         toggleComplete(selectedList, taskListItem);
         priorityFlagToggle(selectedList, taskListItem);
 
-        priorityBtn.append(priorityFlag);
+        editBtn.append(editBtnImg);
+        priorityBtn.append(priorityFlagImg);
         taskItemLabel.append(taskItemSpan, taskItemInput);
 
-        //! Testing (07):
-        taskListItem.append(spanDueDate)
+        taskListItem.append(spanDueDate) // Add due date to list item.
         
-        divTaskItems.append(taskItemLabel, taskListItem, priorityBtn, deleteBtnTask);
+        divTaskItems.append(taskItemLabel, taskListItem, editBtn, priorityBtn, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
     })
 };
@@ -251,14 +258,15 @@ function priorityFlagToggle(selectedList, taskListItem) {
     }
 };
 
+// ! TESTING (07):
 // Open modal to edit task items:
 function editTaskItem() {
-    
+
 };
 
 // User clicks on priority flag and adds true/false to projectItemList:
 taskItemsContainer.addEventListener('click', e => {
-    if (e.target.classList.contains('priority-btn') || e.target.tagName.toLowerCase() === 'img') {
+    if (e.target.classList.contains('priority-btn') || e.target.classList.contains('priority-flag-img')) {
         const selectedList = projectItemList.find(item => item.id === selectedListId);
         
         if (selectedListId > 1) {
@@ -283,13 +291,13 @@ taskItemsContainer.addEventListener('click', e => {
 createNewTaskForm.addEventListener('submit', e => {
     e.preventDefault();
     const getValue = addTaskInput.value;
-    const inputDueDate = document.querySelector('.due-date-input'); //! Testing.
-    const getDate = inputDueDate.value; //! Testing.
+    const inputDueDate = document.querySelector('.due-date-input');
+    const getDate = inputDueDate.value;
     if (selectedListId && getValue) {
         // getResult => get currently selected object:
         const getResult = projectItemList.find(item => item.id === selectedListId);
         let newResult;
-        //! Testing => Deal with date input value:
+        // Deal with date input values:
         if (getDate) {
             newResult = generateTask(getValue, getDate);
         } else {
@@ -403,6 +411,28 @@ chevron.addEventListener('click', e => {
     }
 });
 
+// When the user clicks the button, open the modal 
+taskItemsContainer.addEventListener('click', e => {
+    if (e.target.classList.contains('edit-btn') || e.target.classList.contains('edit-btn-img')) {
+        modal.style.display = 'block';
+    }
+});
+
+// Close modal if close btn pressed:
+modal.addEventListener('click', e => {
+    // When the user clicks on <span> (x), close the modal
+    if (e.target.classList.contains('close-modal-btn')) {
+        modal.style.display = '';
+    }
+});
+
+// Close modal if window target is clicked:
+window.addEventListener('click', e => {
+    if (e.target == modal) {
+        modal.style.display = '';
+    }
+})
+
 
 
 
@@ -412,17 +442,5 @@ function printWindow() {
     });
 };
 // printWindow();
-  
-
-
-
-
-
-
-
-
-
-
-
 
 render();
