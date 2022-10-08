@@ -1,5 +1,7 @@
 // TODO: 1. CSS white frosted color design in container background and maybe each completed task item (blur effect) /// 2. Adding 'due date' to each task item /// 3. 
 
+// const { default: flatpickr } = require("flatpickr");
+
 
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
@@ -154,6 +156,11 @@ function renderTaskItem(selectedList) {
         taskItemInput.setAttribute('type', 'checkbox');
         taskItemInput.setAttribute('name', 'task');
         taskItemInput.checked = entry.complete;
+
+        const divTaskItemBox = document.createElement('div'); //! testing.
+        divTaskItemBox.classList.add('task-item-box'); //! testing.
+        divTaskItemBox.id = entry.id;
+
         const taskListItem = document.createElement('li');
         taskListItem.classList.add('task-list-item');
         taskListItem.id = entry.id;
@@ -186,23 +193,24 @@ function renderTaskItem(selectedList) {
         deleteBtnTask.setAttribute('type', 'submit');
         deleteBtnTask.innerHTML = '&#10005'
 
-        toggleComplete(selectedList, taskListItem);
-        priorityFlagToggle(selectedList, taskListItem);
+        toggleComplete(selectedList, divTaskItemBox);
+        priorityFlagToggle(selectedList, divTaskItemBox);
 
         editBtn.append(editBtnImg);
         priorityBtn.append(priorityFlagImg);
         taskItemLabel.append(taskItemSpan, taskItemInput);
 
-        taskListItem.append(spanDueDate) // Add due date to list item.
+        // taskListItem.append(spanDueDate) // Add due date to list item.
+
+        divTaskItemBox.append(taskListItem, spanDueDate) //! testing.
         
-        divTaskItems.append(taskItemLabel, taskListItem, editBtn, priorityBtn, deleteBtnTask);
+        divTaskItems.append(taskItemLabel, divTaskItemBox, editBtn, priorityBtn, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
     })
 };
 
 
-// Todo: Issue is the clearElement() function before rendering is preventing any input elements from 'sticking' cause it's wiping away every time. 
-// ? => Create a date input element next to the 'Enter New Task' input => User creates task along with choosing a due date => ProjectItemList has a new property called 'dueDate' and is updated when user enters a date => the date is displayed within the task item => There should also be a new 'edit' button that pops open a modal allowing user to edit the task and due date and potentially other properties.
+
 const datePicker = flatpickr(".due-date", {
     enableTime: true,
     // dateFormat: "Y-m-d H:i",
@@ -213,19 +221,22 @@ const datePicker = flatpickr(".due-date", {
     minuteIncrement: 1,
 });
 
+// flatpickr specifically for modal date picker:
+const datePicker1 = flatpickr(".modal-input-due-date")
+
 // Add .complete class to tasks where task.complete === true (line through):
-function toggleComplete(selectedList, taskListItem) {
+function toggleComplete(selectedList, taskItemBox) {
     if (selectedListId > 1) {
         // Add 'complete' class to li elements match the same id as the id for each task with '.complete === true':
-        const listStringConvert = taskListItem.id.toString(); // Convert the ids from list element from number to string for comparison:
+        const listStringConvert = taskItemBox.id.toString(); // Convert the ids from list element from number to string for comparison:
         const completedTasks = []; // Get selected list tasks id that where 'complete === true' and put all ids into an array:
         selectedList.filter(item => { if (item.complete === true && selectedListId) { completedTasks.push(item.id) } });
-        if (completedTasks.includes(listStringConvert)) { taskListItem.classList.add('complete') }
+        if (completedTasks.includes(listStringConvert)) { taskItemBox.classList.add('complete') }
     } else {
-        const todayStringConvert = taskListItem.id.toString();
+        const todayStringConvert = taskItemBox.id.toString();
         const completedTodayTask = [];
         todayItemList.filter(item => { if (item.complete === true) { completedTodayTask.push(item.id) } });
-        if (completedTodayTask.includes(todayStringConvert)) { taskListItem.classList.add('complete') };
+        if (completedTodayTask.includes(todayStringConvert)) { taskItemBox.classList.add('complete') };
     }
 }
 
@@ -242,27 +253,24 @@ function renderTaskCount(selectedList) {
     }
 };
 
+const taskItemBox = document.querySelector('.task-item-box')
 // Dealing with high priority flag on task items:
-function priorityFlagToggle(selectedList, taskListItem) {
+function priorityFlagToggle(selectedList, taskItemBox) {
     // Go through projectItemList.tasks.highPriority => if true, add class:
-    const listStringConvert = taskListItem.id.toString();
+    const listStringConvert = taskItemBox.id.toString();
     const highPriorityTasks = []; // Holds all the tasks.highPriority = true ids.
     const highPriorityTodayTasks = [];
 
     if (selectedListId > 1) {
         selectedList.filter(item => {if (item.highPriority === true && selectedListId) {highPriorityTasks.push(item.id)}});
-        if (highPriorityTasks.includes(listStringConvert)) {taskListItem.classList.toggle('high-priority')}
+        if (highPriorityTasks.includes(listStringConvert)) {taskItemBox.classList.toggle('high-priority')}
     } else {
         todayItemList.filter(item => {if (item.highPriority === true) {highPriorityTodayTasks.push(item.id)}});
-        if (highPriorityTodayTasks.includes(listStringConvert)) {taskListItem.classList.add('high-priority')};
+        if (highPriorityTodayTasks.includes(listStringConvert)) {taskItemBox.classList.add('high-priority')};
     }
 };
 
-// ! TESTING (07):
-// Open modal to edit task items:
-function editTaskItem() {
-
-};
+//! EDIT TASK ITEM GOES HERE:
 
 // User clicks on priority flag and adds true/false to projectItemList:
 taskItemsContainer.addEventListener('click', e => {
@@ -303,8 +311,6 @@ createNewTaskForm.addEventListener('submit', e => {
         } else {
             newResult = generateTask(getValue, null); 
         }
-
-
 
         // Generating task input based on 'today' or project items:
         if (selectedListId > 1 && getResult) {
@@ -415,6 +421,17 @@ chevron.addEventListener('click', e => {
 taskItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('edit-btn') || e.target.classList.contains('edit-btn-img')) {
         modal.style.display = 'block';
+
+        //! TESTING:
+        // Todo: User clicks on 'edit' button => get the button 'id' to a variable => get the modal input.title.value and the modal input.dueDate.value => replace the current values inside the current task items.
+        const modalInputTaskTitle = document.querySelector('.modal-input-task-title');
+        const taskListItemAll = document.querySelectorAll('.task-list-item');
+        taskListItemAll.forEach(item => {
+            if (item.id === e.target.id) {
+                modalInputTaskTitle.value = item.innerText; // Modal input value becomes task item value.
+            }
+        })
+
     }
 });
 
@@ -441,6 +458,6 @@ function printWindow() {
         console.log('window target', e.target);
     });
 };
-// printWindow();
+printWindow();
 
 render();
