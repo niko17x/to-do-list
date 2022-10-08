@@ -157,8 +157,8 @@ function renderTaskItem(selectedList) {
         taskItemInput.setAttribute('name', 'task');
         taskItemInput.checked = entry.complete;
 
-        const divTaskItemBox = document.createElement('div'); //! testing.
-        divTaskItemBox.classList.add('task-item-box'); //! testing.
+        const divTaskItemBox = document.createElement('div');
+        divTaskItemBox.classList.add('task-item-box');
         divTaskItemBox.id = entry.id;
 
         const taskListItem = document.createElement('li');
@@ -168,9 +168,9 @@ function renderTaskItem(selectedList) {
 
         const spanDueDate = document.createElement('span');
         spanDueDate.classList.add('span-due-date')
+        spanDueDate.id = entry.id;
         spanDueDate.innerText = entry.dueDate;
 
-        // ! Testing (07) => Edit button for each task item:
         const editBtn = document.createElement('button');
         editBtn.id = entry.id;
         editBtn.classList.add('edit-btn');
@@ -200,9 +200,8 @@ function renderTaskItem(selectedList) {
         priorityBtn.append(priorityFlagImg);
         taskItemLabel.append(taskItemSpan, taskItemInput);
 
-        // taskListItem.append(spanDueDate) // Add due date to list item.
 
-        divTaskItemBox.append(taskListItem, spanDueDate) //! testing.
+        divTaskItemBox.append(taskListItem, spanDueDate);
         
         divTaskItems.append(taskItemLabel, divTaskItemBox, editBtn, priorityBtn, deleteBtnTask);
         taskItemsContainer.append(divTaskItems);
@@ -269,8 +268,6 @@ function priorityFlagToggle(selectedList, taskItemBox) {
         if (highPriorityTodayTasks.includes(listStringConvert)) {taskItemBox.classList.add('high-priority')};
     }
 };
-
-//! EDIT TASK ITEM GOES HERE:
 
 // User clicks on priority flag and adds true/false to projectItemList:
 taskItemsContainer.addEventListener('click', e => {
@@ -422,17 +419,25 @@ taskItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('edit-btn') || e.target.classList.contains('edit-btn-img')) {
         modal.style.display = 'block';
 
-        //! TESTING:
-        // Todo: User clicks on 'edit' button => get the button 'id' to a variable => get the modal input.title.value and the modal input.dueDate.value => replace the current values inside the current task items.
         const modalInputTaskTitle = document.querySelector('.modal-input-task-title');
+        const modalInputDueDate = document.querySelector('.modal-input-due-date');
         const taskListItemAll = document.querySelectorAll('.task-list-item');
+        const spanDueDateAll = document.querySelectorAll('.span-due-date');
+
+        // Update Modal title input:
         taskListItemAll.forEach(item => {
             if (item.id === e.target.id) {
                 modalInputTaskTitle.value = item.innerText; // Modal input value becomes task item value.
+                
             }
-        })
-
-    }
+        });
+        // Update Modal date input:
+        spanDueDateAll.forEach(item => {
+            if (item.id === e.target.id) {
+                modalInputDueDate.value = item.innerText;
+            }
+        });
+    };
 });
 
 // Close modal if close btn pressed:
