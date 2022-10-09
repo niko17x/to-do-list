@@ -220,8 +220,16 @@ const datePicker = flatpickr(".due-date", {
     minuteIncrement: 1,
 });
 
-// flatpickr specifically for modal date picker:
-const datePicker1 = flatpickr(".modal-input-due-date")
+// flatpickr for modal date picker:
+const datePickerModal = flatpickr(".modal-input-due-date", {
+    enableTime: true,
+    // dateFormat: "Y-m-d H:i",
+    altInput: true,
+    altFormat: "F j, Y (h:i K)",
+    allowInput: true,
+    shorthandCurrentMonth: true,
+    minuteIncrement: 1,
+})
 
 // Add .complete class to tasks where task.complete === true (line through):
 function toggleComplete(selectedList, taskItemBox) {
@@ -453,8 +461,13 @@ modal.addEventListener('submit', e => {
     taskListItemAll.forEach(item => {
         if (modalInputTaskTitle.value === item.innerText) { return } // No changes made.
         else { // Update changes made from modal to ProjectItemList array:
-            let selectedTask = selectedList.tasks.find(property => property.id === item.id);
-            selectedTask.task = modalInputTaskTitle.value;
+            if (selectedListId === '1') { // Account for 'today' and 'project' items.
+                let todayTask = todayItemList.find(property => property.id === item.id);
+                todayTask.task = modalInputTaskTitle.value;
+            } else {
+                let selectedTask = selectedList.tasks.find(property => property.id === item.id);
+                selectedTask.task = modalInputTaskTitle.value;
+            }
         }
     });
     // Deal with modal date changes:
@@ -463,9 +476,13 @@ modal.addEventListener('submit', e => {
             console.log('Dates are the same!')
             return
         } else {
-            console.log(modalInputDueDate.value);
-            let selectedDate = selectedList.tasks.find(property => property.id === item.id);
-            selectedDate.dueDate = modalInputDueDate.value;
+            if (selectedListId === '1') {
+                let todayTask = todayItemList.find(property => property.id === item.id);
+                todayTask.dueDate = modalInputDueDate.value;
+            } else {
+                let selectedDate = selectedList.tasks.find(property => property.id === item.id);
+                selectedDate.dueDate = modalInputDueDate.value;
+            }
         }
     })
 
