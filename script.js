@@ -428,7 +428,6 @@ taskItemsContainer.addEventListener('click', e => {
         taskListItemAll.forEach(item => {
             if (item.id === e.target.id) {
                 modalInputTaskTitle.value = item.innerText; // Modal input value becomes task item value.
-                
             }
         });
         // Update Modal date input:
@@ -439,6 +438,39 @@ taskItemsContainer.addEventListener('click', e => {
         });
     };
 });
+
+// Updating modal title and date input if user changes values:
+modal.addEventListener('submit', e => {
+    e.preventDefault();
+    const modalInputTaskTitle = document.querySelector('.modal-input-task-title');
+    const modalInputDueDate = document.querySelector('.modal-input-due-date');
+    const taskListItemAll = document.querySelectorAll('.task-list-item');
+    const spanDueDateAll = document.querySelectorAll('.span-due-date');
+
+    const selectedList = projectItemList.find(item => item.id === selectedListId);
+
+    // Deal with modal input title changes:
+    taskListItemAll.forEach(item => {
+        if (modalInputTaskTitle.value === item.innerText) { return } // No changes made.
+        else { // Update changes made from modal to ProjectItemList array:
+            let selectedTask = selectedList.tasks.find(property => property.id === item.id);
+            selectedTask.task = modalInputTaskTitle.value;
+        }
+    });
+    // Deal with modal date changes:
+    spanDueDateAll.forEach(item => {
+        if (modalInputDueDate.value === item.innerText) {
+            console.log('Dates are the same!')
+            return
+        } else {
+            console.log(modalInputDueDate.value);
+            let selectedDate = selectedList.tasks.find(property => property.id === item.id);
+            selectedDate.dueDate = modalInputDueDate.value;
+        }
+    })
+
+    render();
+})
 
 // Close modal if close btn pressed:
 modal.addEventListener('click', e => {
