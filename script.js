@@ -3,6 +3,7 @@
 // const { default: flatpickr } = require("flatpickr");
 
 
+
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
 const LOCAL_STORAGE_SELECTED_LIST_ID = 'task.selectedListId'
@@ -221,14 +222,14 @@ const datePicker = flatpickr(".due-date", {
 });
 
 // flatpickr for modal date picker:
-const datePickerModal = flatpickr(".modal-input-due-date", {
+let datePickerModal = flatpickr(".modal-input-due-date", {
     enableTime: true,
-    // dateFormat: "Y-m-d H:i",
     altInput: true,
     altFormat: "F j, Y (h:i K)",
-    allowInput: true,
-    shorthandCurrentMonth: true,
-    minuteIncrement: 1,
+});
+
+flatpickr.setDefaults({
+    disableMobile: true,
 })
 
 // Add .complete class to tasks where task.complete === true (line through):
@@ -260,7 +261,7 @@ function renderTaskCount(selectedList) {
     }
 };
 
-const taskItemBox = document.querySelector('.task-item-box')
+// const taskItemBox = document.querySelector('.task-item-box')
 // Dealing with high priority flag on task items:
 function priorityFlagToggle(selectedList, taskItemBox) {
     // Go through projectItemList.tasks.highPriority => if true, add class:
@@ -275,6 +276,21 @@ function priorityFlagToggle(selectedList, taskItemBox) {
         todayItemList.filter(item => {if (item.highPriority === true) {highPriorityTodayTasks.push(item.id)}});
         if (highPriorityTodayTasks.includes(listStringConvert)) {taskItemBox.classList.add('high-priority')};
     }
+};
+
+// Message for user in Modal for input title/date updates:
+function displayMessage(attribute) {
+    const userMsg = document.querySelector('.user-message');
+    const msgDiv = document.createElement('div');
+
+    if (attribute === 'title') {
+        msgDiv.textContent = 'Title has been successfully changed!';
+    } else {
+        msgDiv.textContent = 'Date has been successfully changed!'
+    }
+    userMsg.append(msgDiv);
+    
+
 };
 
 // User clicks on priority flag and adds true/false to projectItemList:
@@ -422,28 +438,36 @@ chevron.addEventListener('click', e => {
     }
 });
 
-// When the user clicks the button, open the modal 
+// Open modal on click and update modal input values:
 taskItemsContainer.addEventListener('click', e => {
     if (e.target.classList.contains('edit-btn') || e.target.classList.contains('edit-btn-img')) {
         modal.style.display = 'block';
+        // Reset all messages in modal every time modal is populated:
+        clearElement(document.querySelector('.user-message'));
 
+        
         const modalInputTaskTitle = document.querySelector('.modal-input-task-title');
-        const modalInputDueDate = document.querySelector('.modal-input-due-date');
+        const modalInputDueDate = document.querySelector('.modal-input-due-date');             
         const taskListItemAll = document.querySelectorAll('.task-list-item');
         const spanDueDateAll = document.querySelectorAll('.span-due-date');
 
-        // Update Modal title input:
-        taskListItemAll.forEach(item => {
-            if (item.id === e.target.id) {
-                modalInputTaskTitle.value = item.innerText; // Modal input value becomes task item value.
-            }
-        });
-        // Update Modal date input:
-        spanDueDateAll.forEach(item => {
-            if (item.id === e.target.id) {
-                modalInputDueDate.value = item.innerText;
-            }
-        });
+        modalInputTaskTitle.value = '';
+        datePickerModal.clear(); // Clear flatpickr.
+        
+        // ?: Unable to show current span date value within the modal date input value:
+        // // Update Modal date input:
+        // spanDueDateAll.forEach(item => {
+        //     if (item.id === e.target.id) {
+        //         modalInputDueDate.value = datePickerModal.currentYear;
+        //         modalInputDueDate.innerText = datePickerModal.currentYear;
+        //     }
+        // });
+        // // Update Modal title input:
+        // taskListItemAll.forEach(item => {
+        //     if (item.id === e.target.id) {
+        //         modalInputTaskTitle.value = item.innerText; // Modal input value becomes task item value.
+        //     }
+        // });
     };
 });
 
@@ -459,7 +483,7 @@ modal.addEventListener('submit', e => {
 
     // Deal with modal input title changes:
     taskListItemAll.forEach(item => {
-        if (modalInputTaskTitle.value === item.innerText) { return } // No changes made.
+        if (modalInputTaskTitle.value === item.innerText || modalInputTaskTitle.value === '') { return } // No changes made.
         else { // Update changes made from modal to ProjectItemList array:
             if (selectedListId === '1') { // Account for 'today' and 'project' items.
                 let todayTask = todayItemList.find(property => property.id === item.id);
@@ -468,21 +492,23 @@ modal.addEventListener('submit', e => {
                 let selectedTask = selectedList.tasks.find(property => property.id === item.id);
                 selectedTask.task = modalInputTaskTitle.value;
             }
+            displayMessage(attribute = 'title');
         }
     });
     // Deal with modal date changes:
     spanDueDateAll.forEach(item => {
-        if (modalInputDueDate.value === item.innerText) {
-            console.log('Dates are the same!')
+        if (modalInputDueDate.value === item.innerText || modalInputDueDate.value === '') {
             return
         } else {
             if (selectedListId === '1') {
-                let todayTask = todayItemList.find(property => property.id === item.id);
-                todayTask.dueDate = modalInputDueDate.value;
+                let todayDueDate = todayItemList.find(property => property.id === item.id);
+                // modalInputDueDate.innerText = todayDueDate.dueDate;
+                todayDueDate.dueDate = modalInputDueDate.value;
             } else {
                 let selectedDate = selectedList.tasks.find(property => property.id === item.id);
                 selectedDate.dueDate = modalInputDueDate.value;
             }
+            displayMessage(attribute = 'date');
         }
     })
 
