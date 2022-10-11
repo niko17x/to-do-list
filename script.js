@@ -1,8 +1,4 @@
-// TODO: 1. CSS white frosted color design in container background and maybe each completed task item (blur effect) /// 2. Adding 'due date' to each task item /// 3. 
-
-// const { default: flatpickr } = require("flatpickr");
-
-
+// Todo: 1. Editing date from modal is causing the edit to take effect on all existing tasks => Should only edit the selected task. /// 
 
 // Dealing with local storage using KEYS:
 const LOCAL_STORAGE_LIST_KEY = 'task.projectItemList';
@@ -453,6 +449,7 @@ taskItemsContainer.addEventListener('click', e => {
 
         modalInputTaskTitle.value = '';
         datePickerModal.clear(); // Clear flatpickr.
+
         
         // ?: Unable to show current span date value within the modal date input value:
         // // Update Modal date input:

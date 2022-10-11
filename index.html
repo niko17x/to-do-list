@@ -65,7 +65,7 @@
                         <form action="" class="create-new-task-form">
                             <button class="add-task-btn">&#43</button>
                             <label class="add-task-label" for="add-task">
-                                <input class="add-task-input" type="text" name="add-task" placeholder="Enter New Task">
+                                <input class="add-task-input" type="text" name="add-task" placeholder="Create New Task">
                             </label>
                         </form>
                         <form class="due-date-form" action="">
@@ -107,13 +107,16 @@
             <div class="modal-body">
                 <form class="modal-edit-task-form" action="">
                     <label for="edit-task-title">
-                        <input class="modal-input-task-title" id="edit-task-title" type="text">
+                        <input class="modal-input-task-title" id="edit-task-title" type="text" placeholder="Enter New Task">
                     </label>
                     <label for="modal-edit-task-date">
-                        <input class="modal-input-due-date" type="date" id="modal-edit-task-date">
+                        <input class="modal-input-due-date" type="text" id="modal-edit-task-date" placeholder="Enter New Date">
                     </label>
-                    <button type="submit">Save Changes</button>
+                    <button class="modal-save-btn" type="submit">Save Changes</button>
                 </form>
+                <div class="user-message">
+                    <!-- Success/Error form messages. -->
+                </div>
             </div>
         </div>
     </div>
