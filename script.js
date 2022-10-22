@@ -325,9 +325,19 @@ function displayMessage(attribute) {
   const msgDiv = document.createElement("div");
 
   if (attribute === "title") {
-    msgDiv.textContent = "Data successfully updated!";
+    msgDiv.textContent = "Title successfully updated!";
+  } else if (attribute === "date") {
+    msgDiv.textContent = "Date successfully changed!";
+  } else if (attribute === "noChange") {
+    msgDiv.textContent = "No changes have been made.";
+    msgDiv.style.color = "red";
   }
-  userMsg.append(msgDiv);
+  userMsg.appendChild(msgDiv);
+
+  // Remove user message after 3 seconds of display:
+  setTimeout(() => {
+    userMsg.removeChild(msgDiv);
+  }, 3000);
 }
 
 // User clicks on priority flag and adds true/false to projectItemList:
@@ -557,31 +567,83 @@ modal.addEventListener("submit", (e) => {
     (property) => property.id === modalInputTaskTitle.id
   );
 
-  console.log(todayTask.task);
-  console.log(modalInputTaskTitle.value);
-
-  if (
-    (modalInputTaskTitle.value === todayTask.task ||
-      modalInputTaskTitle.value === "") &&
-    (modalInputDueDate.value === todayTask.dueDate ||
-      modalInputDueDate.value === "")
-  ) {
-    console.log("No changes detected...");
-    return; // No changes made on modal inputs...
-  } else {
-    if (selectedListId === "1") {
-      todayTask.task = modalInputTaskTitle.value; // 'Today' list.
-      todayTask.dueDate = modalInputDueDate.value;
-      displayMessage("title");
-    } else if (selectedListId != "1") {
-      const selectedTask = selectedList.tasks.find(
-        (item) => item.id === modalInputTaskTitle.id
-      );
-      selectedTask.task = modalInputTaskTitle.value; // 'Projects' list.
-      selectedTask.dueDate = modalInputDueDate.value;
+  if (selectedListId === "1") {
+    if (
+      modalInputTaskTitle.value === todayTask.task ||
+      modalInputTaskTitle.value === ""
+    ) {
+      null;
+    } else {
+      todayTask.task = modalInputTaskTitle.value;
       displayMessage("title");
     }
+    if (
+      modalInputDueDate.value === todayTask.dueDate ||
+      modalInputDueDate.value === ""
+    ) {
+      null;
+    } else {
+      todayTask.dueDate = modalInputDueDate.value;
+      displayMessage("date");
+    }
+  } else {
+    const selectedTask = selectedList.tasks.find(
+      (item) => item.id === modalInputTaskTitle.id
+    );
+    if (
+      modalInputTaskTitle.value === selectedTask.task ||
+      modalInputTaskTitle.value === ""
+    ) {
+      null;
+    } else {
+      selectedTask.task = modalInputTaskTitle.value;
+      displayMessage("title");
+    }
+    if (
+      modalInputDueDate.value === selectedTask.dueDate ||
+      modalInputDueDate.value === ""
+    ) {
+      null;
+    } else {
+      selectedTask.dueDate = modalInputDueDate.value;
+      displayMessage("date");
+    }
   }
+
+  // if (
+  //   modalInputTaskTitle.value === todayTask.task ||
+  //   modalInputTaskTitle.value === ""
+  // ) {
+  //   console.log("No title changes have been made.");
+  //   console.log(modalInputTaskTitle.value);
+  //   console.log(todayTask.task);
+  //   return;
+  // } else {
+  //   if (selectedListId === "1") {
+  //     todayTask.task = modalInputTaskTitle.value;
+  //   } else if (selectedListId != "1") {
+  //     const selectedTask = selectedList.tasks.find(
+  //       (item) => item.id === modalInputTaskTitle.id
+  //     );
+  //     selectedTask.task = modalInputTaskTitle.value;
+  //   }
+  //   // displayMessage("title");
+  // }
+
+  // if (
+  //   modalInputDueDate.value === todayTask.dueDate ||
+  //   modalInputDueDate.value === ""
+  // ) {
+  //   console.log("No date changes have been made.");
+  //   return; // No date changes made in modal.
+  // } else {
+  //   if (selectedListId === "1") {
+  //     todayTask.dueDate = modalInputDueDate.value;
+  //   } else {
+  //     selectedTask.dueDate = modalInputDueDate.value;
+  //   }
+  //   // displayMessage("date");
+  // // }
 
   render();
 });
